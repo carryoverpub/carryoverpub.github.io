@@ -1,0 +1,21 @@
+# source summary file -> sha256 prefix, as read when figures.json was extracted (2026-10-28)
+lag-ladder/results/distance/summary.json  53f65ab75363
+lag-ladder/results/reader/summary.json  5d7615948589
+lag-ladder/results/ownrun/summary.json  f3b8f00ff6ed
+lag-ladder/results/ownrun_seed2/summary.json  3e051800b225
+lag-ladder/results/ownrun_llama/summary_home.json  e595ca111bd2
+lag-ladder/results/ownrun_smollm3/summary.json  5438a8cfd2dc
+lag-ladder/results/ownrun_agentic/summary.json (home summarizer at 3add994)  d91315247d79
+lag-ladder/results/ownrun_controls/summary.json  c72325b1a3ce
+lag-ladder/results/ownrun_far/summary.json  315348088e86
+lag-ladder/results/ownrun_task/summary_home.json  91c5c83cc814
+linear-ceiling/results/cache-behavior/summary.json  5228de0dd8c4
+linear-ceiling/results/e9l/summary.json  64e64e9318d4
+linear-ceiling/results/e9/summary.json  ae461db872f2
+linear-ceiling/results/e9f/summary.json  e1e5feb8aadd
+linear-ceiling/results/e9fl/summary.json  1ac712b3897e
+linear-ceiling/results/task-quality/pilot/summary.json  4bd59e3352c8
+linear-ceiling/results/task-quality/pilot-widened/summary.json  66213c02af83
+linear-ceiling/results/task-quality/items-e9l.json  8153e9d30d04
+linear-ceiling/results/task-quality/items-e9.json  96499cb24cb8
+figures.json  d3b56d6c071a

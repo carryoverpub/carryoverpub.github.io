@@ -1,0 +1,248 @@
+<!--HEAD-->
+<title>Carryover Effects</title>
+<!--ARTIFACT-META-->
+<style>
+/* Format: worldmodels.github.io, i.e. the Distill v1 template: a full-viewport cover, then one 648px article column
+   (984px page, left-aligned on wide screens), Georgia paragraphs on a system-sans shell, hairline links, grey appendix.
+   Light only, as the model is; every value below is the template's own where the template sets one. */
+:root {
+  --text: rgba(0, 0, 0, 0.8); --text-soft: rgba(0, 0, 0, 0.6); --text-faint: rgba(0, 0, 0, 0.5); --rule: rgba(0, 0, 0, 0.1);
+  --cover: #121417; --cover-text: #ffffff;
+  --carry: #0b6e78; --carry-soft: rgba(11, 110, 120, 0.14); --hold: #b4521c; --good: #2e7d32; --bad: #b3261e;
+  --serif-title: HoeflerText-Regular, Cochin, Georgia, serif; --serif: Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: Menlo, Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #ffffff; color: var(--text); font: 17px/1.55em var(--sans); overflow-x: hidden;
+  padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 1024px) { body { font-size: 20px; } }
+
+/* cover, as the model's full-screen demo with its dark overlay and white title */
+.cover { position: relative; min-height: 100vh; background: var(--cover); color: var(--cover-text); display: grid; align-content: center; justify-items: start;
+  padding-block: 96px 120px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); overflow: hidden; }
+.cover svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .22; }
+.cover .inner { position: relative; width: 100%; max-width: 984px; margin: 0 auto; display: grid; gap: 18px; }
+.cover .kicker { font: 300 14px/1.4 var(--sans); letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.cover h1 { font-family: var(--serif-title); font-weight: 400; font-size: clamp(44px, 9vw, 96px); line-height: 1; margin: 0; letter-spacing: -.02em; }
+.cover .question { font: 300 clamp(20px, 3vw, 30px)/1.35 var(--sans); max-width: 30ch; margin: 0; opacity: .92; }
+.cover .instruction { position: absolute; left: 0; right: 0; bottom: 10%; text-align: center; font: 300 16px/1.4 var(--sans); color: var(--cover-text); opacity: .85; }
+.scroll-down { position: absolute; right: 10px; bottom: 10px; width: 80px; height: 40px; font: 300 12px/1 var(--sans); color: var(--cover-text); text-align: center; opacity: .9; }
+.scroll-down span { display: block; margin: 6px auto 0; width: 10px; height: 10px; border-right: 2px solid var(--cover-text); border-bottom: 2px solid var(--cover-text); transform: rotate(45deg); }
+
+/* article column (the template's .l-body rules) */
+article { display: block; padding-bottom: 72px; background: #ffffff; }
+article > * { width: auto; margin-left: 24px; margin-right: 24px; }
+@media (min-width: 768px) { article > * { width: 648px; margin-left: auto; margin-right: auto; } article > .l-page { width: min(984px, calc(100% - 48px)); } }
+@media (min-width: 1080px) { article > * { margin-left: calc(50% - 984px / 2); margin-right: 0; } article > .l-page { width: 984px; } article > .l-middle { width: 816px; } }
+article h1 { margin-top: 48px; margin-bottom: 12px; font-family: var(--serif-title); font-weight: 400; font-size: 40px; line-height: 1em; }
+@media (min-width: 768px) { article h1 { font-size: 46px; } }
+@media (min-width: 1080px) { article h1 { font-size: 50px; letter-spacing: -0.02em; } }
+article h1 + h2 { font-weight: 300; font-size: 20px; line-height: 1.4em; margin-top: 8px; margin-bottom: 24px; font-family: var(--serif-title); }
+@media (min-width: 1080px) { article h1 + h2 { margin-top: 12px; font-size: 24px; } }
+article h2 { font-family: var(--serif-title); font-weight: 400; font-size: 26px; line-height: 1.25em; margin-top: 36px; margin-bottom: 24px; }
+@media (min-width: 1024px) { article h2 { margin-top: 48px; font-size: 30px; } }
+article h3 { font-family: var(--serif-title); font-weight: 400; font-style: italic; font-size: 20px; line-height: 1.4em; margin-top: 36px; margin-bottom: 18px; }
+@media (min-width: 1024px) { article h3 { font-size: 26px; } }
+article p, article ul, article ol { margin-top: 0; margin-bottom: 24px; font-family: var(--serif); }
+article a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+article a:hover { border-bottom-color: rgba(0, 0, 0, 0.8); }
+article hr { border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.2); margin-top: 60px; margin-bottom: 60px; }
+.byline { font: 12px/18px var(--sans); color: var(--text-faint); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 12px 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; }
+.byline .label { text-transform: uppercase; letter-spacing: .05em; display: block; }
+.byline .value { color: var(--text-soft); display: block; }
+.byline a { border-bottom: none; } .byline a:hover { text-decoration: underline; }
+.links { font: 14px/1.4 var(--sans); display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; margin-bottom: 36px; }
+.links a { border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+.links .soon { color: var(--text-faint); border-bottom: 1px dashed rgba(0, 0, 0, 0.3); }
+figure { position: relative; margin-top: 30px; margin-bottom: 30px; min-width: 0; }
+@media (min-width: 1024px) { figure { margin-top: 48px; margin-bottom: 48px; } }
+figure svg { width: 100%; height: auto; display: block; }
+figure .chart { position: relative; height: 380px; }
+figcaption { color: var(--text-soft); font: 12px/1.5em var(--sans); margin-top: 10px; }
+@media (min-width: 1024px) { figcaption { font-size: 13px; } }
+figcaption b { color: var(--text); font-weight: 600; }
+figcaption .cite { display: block; font-family: var(--mono); font-size: 11px; margin-top: 6px; color: var(--text-faint); overflow-wrap: anywhere; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font: 15px/1.45 var(--sans); font-variant-numeric: tabular-nums; }
+table th { border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-weight: 600; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); }
+table td { border-bottom: 1px solid rgba(0, 0, 0, 0.05); vertical-align: top; }
+table th, table td { padding: 6px 10px 6px 0; }
+table.rec { table-layout: fixed; } table.rec th:first-child { width: 2.4em; } table.rec th:last-child { width: 42%; }
+td.n { color: var(--text-faint); }
+td.r { font-family: var(--mono); font-size: 12px; color: var(--text-faint); overflow-wrap: anywhere; }
+td.r b { font-weight: 400; color: var(--text); }
+.bar { position: relative; height: 9px; background: var(--carry-soft); border-radius: 2px; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--carry); border-radius: 2px; }
+.axis { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.axis.carry { background: var(--carry); } .axis.hold { background: var(--hold); } .axis.both { background: var(--text-faint); }
+.note { font-family: var(--serif); font-size: .92em; color: var(--text-soft); border-left: 1px solid rgba(0, 0, 0, 0.2); padding-left: 18px; }
+
+/* appendix (the template's dt-appendix) */
+.appendix { display: block; font: 14px/24px var(--sans); border-top: 1px solid var(--rule); color: var(--text-faint); background: rgb(250, 250, 250); padding-top: 36px; padding-bottom: 60px; }
+.appendix > * { margin-left: 24px; margin-right: 24px; }
+@media (min-width: 768px) { .appendix > * { width: 648px; margin-left: auto; margin-right: auto; } }
+@media (min-width: 1080px) { .appendix > * { margin-left: calc(50% - 984px / 2); margin-right: 0; } }
+.appendix h3 { font: 500 16px/24px var(--sans); color: rgba(0, 0, 0, 0.65); margin: 18px auto; font-style: normal; }
+.appendix p { font-family: var(--sans); margin-bottom: 12px; }
+.appendix a { color: rgba(0, 0, 0, 0.6); border-bottom: 1px solid rgba(0, 0, 0, 0.2); text-decoration: none; }
+.appendix pre.citation { font: 11px/15px var(--mono); border: 1px solid var(--rule); background: rgba(0, 0, 0, 0.02); padding: 10px 18px; border-radius: 3px; color: rgb(150, 150, 150); overflow-x: auto; white-space: pre-wrap; }
+@media (max-height: 640px) { .cover .instruction { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+<!--/HEAD-->
+<div class="cover" role="banner">
+  <svg class="bg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#ffffff" stroke-width="1">
+      <!-- the two axes of the paper, as a quiet grid: text (horizontal strips) and weights (the rising ladder) -->
+      <g opacity=".7">
+        <rect x="80" y="430" width="1040" height="26" rx="3"/><rect x="80" y="470" width="1040" height="26" rx="3"/>
+        <line x1="640" y1="420" x2="640" y2="506" stroke-width="2"/>
+      </g>
+      <g opacity=".9">
+        <polyline points="80,330 290,300 500,262 710,222 920,186 1120,150"/>
+        <polyline points="80,120 290,112 500,104 710,98 920,92 1120,88" stroke-dasharray="6 6"/>
+      </g>
+    </g>
+    <g fill="#ffffff" opacity=".55">
+      <rect x="92" y="436" width="18" height="14" rx="2"/><rect x="118" y="436" width="18" height="14" rx="2"/><rect x="144" y="436" width="18" height="14" rx="2"/><rect x="170" y="436" width="18" height="14" rx="2"/>
+      <rect x="660" y="476" width="18" height="14" rx="2"/><rect x="686" y="476" width="18" height="14" rx="2"/><rect x="712" y="476" width="18" height="14" rx="2"/>
+    </g>
+  </svg>
+  <div class="inner">
+    <div class="kicker">Carryover Effects</div>
+    <h1>Carryover Effects</h1>
+    <p class="question">What does a stale KV cache do to the model that reads it?</p>
+  </div>
+  <div class="instruction">Two axes, text and weights, on two pre-registered records.</div>
+  <div class="scroll-down">Scroll<span></span></div>
+</div>
+
+<article>
+  <h1>Carryover Effects in Reused KV Caches Across Agent Handoffs and Policy Updates</h1>
+  <h2>What does a stale KV cache do to the model that reads it?</h2>
+  <div class="byline l-page">
+    <div><span class="label">Authors</span><span class="value">Named with the camera-ready</span></div>
+    <div><span class="label">Published</span><span class="value">13 November 2026</span></div>
+    <div><span class="label">Venue</span><span class="value">Workshop on Long-Context Foundation Models</span></div>
+    <div><span class="label">Record</span><span class="value"><a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> · <a href="https://github.com/hossainpazooki/lag-ladder">lag-ladder</a></span></div>
+  </div>
+  <div class="links">
+    <span class="soon">Paper (13 November)</span>
+    <a href="https://github.com/hossainpazooki/linear-ceiling">Record: text axis</a>
+    <a href="https://github.com/hossainpazooki/lag-ladder">Record: weights axis</a>
+    <a href="#citation">Cite</a>
+  </div>
+
+  <h2>Abstract</h2>
+  <p>A carryover effect is what a model shows when it reads a KV cache that another computation wrote: the text or the weights differ from the writer's, and the reader's next-token distribution shifts with them. The systems that serve and train long-horizon agents produce such reads by design, whenever a later stage rebuilds its prompt from text an earlier stage processed, or a pipelined trainer serves rollouts from a cache an earlier policy wrote. We ask what predicts the effect and measure it on two pre-registered records, one for the text axis and one for the weights axis.</p>
+  <p>On the text axis, the record is 35 coding-agent handoffs whose sender histories run from 35K to 80K tokens. For each, we measure the oracle removal fraction: the share of matched tokens we must remove before the mean key deviation of the remainder falls within a tolerance drawn from a cross-model map's held-out error. Under same-model reuse, the fraction is zero on every one of the 35 handoffs. Its median is zero as well on shorter handoffs, on a second model family, and at two further receivers. Across the four pair cells, the cross-model map must remove 73% to 96% of the matched tokens, and truncating the senders to the short cell's length leaves the deviation above the short cell's level.</p>
+  <p>On the weights axis, a policy reads a cache that its own earlier weights wrote, up to 32 GRPO steps later. On held-out text, the per-token KL stays inside the registered band on three model families and two seeds. On the policy's own prompts, it sits three to four orders of magnitude higher and is outside the band from the first step, where the stale cache already flips the greedy answer on 71% of GSM8K problems, and on 84% to 90% at later steps. At 32 steps, the stale cache costs the trained policy six of the seven accuracy points it had gained. In the opening windows of the agent trajectories that MLPerf Agentic Inference serves, per-token KL stays within the same band, three orders of magnitude below the policy's own prompts.</p>
+  <p>At their operating extremes, the two axes land in the same decade: a re-rendered handoff reads at a median of 0.14 nats with 90% greedy agreement, and a policy's own prompts at 32 steps read at 0.09 nats with 90%. The text's relation to the computation that wrote the cache predicts the carryover effect; weight distance, model family, and context length do not.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 330" role="img" aria-label="Five readings of a reused cache, ordered by the reader's relation to the computation that wrote it, with the measured effect at each">
+      <g font-family="-apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif" fill="rgba(0,0,0,0.8)">
+        <text x="16" y="24" font-size="11.5" font-weight="600" letter-spacing=".08em" fill="rgba(0,0,0,0.5)">FIVE READINGS OF A REUSED CACHE, ORDERED BY THE READER'S RELATION TO THE WRITER</text>
+        <line x1="40" y1="64" x2="40" y2="306" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
+        <g font-size="14">
+          <circle cx="40" cy="74" r="7" fill="#2e7d32"/>
+          <text x="60" y="70" font-weight="600">Same computation</text>
+          <text x="60" y="88" font-size="13" fill="rgba(0,0,0,0.6)">identity control · removal fraction 0 · KL at the float16 floor</text>
+          <circle cx="40" cy="128" r="7" fill="#b4521c"/>
+          <text x="60" y="124" font-weight="600">Later weights, held-out text</text>
+          <text x="60" y="142" font-size="13" fill="rgba(0,0,0,0.6)">inside the 1e-3 band to 32 GRPO steps · three families, two seeds · the benchmark's windows too</text>
+          <circle cx="40" cy="182" r="7" fill="#0b6e78"/>
+          <text x="60" y="178" font-weight="600">Same weights, re-rendered handoff</text>
+          <text x="60" y="196" font-size="13" fill="rgba(0,0,0,0.6)">removal fraction 0 on all 35 · 0.14 nats and 90% greedy agreement at the reader</text>
+          <circle cx="40" cy="236" r="7" fill="#b4521c"/>
+          <text x="60" y="232" font-weight="600">Later weights, the policy's own prompts</text>
+          <text x="60" y="250" font-size="13" fill="rgba(0,0,0,0.6)">out of band from step 1 · 0.09 nats and 90% at step 32 · 71% of greedy answers flip at step 1</text>
+          <circle cx="40" cy="290" r="7" fill="#b3261e"/>
+          <text x="60" y="286" font-weight="600">Another model's cache, mapped</text>
+          <text x="60" y="304" font-size="13" fill="rgba(0,0,0,0.6)">73% to 96% of matched tokens must be removed · truncating the sender does not close the gap</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>The order is by what the reader is reading, not by how far the weights moved: a re-rendered handoff under the same weights and the policy's own prompts 32 steps later land in the same decade, while held-out text under those same later weights stays four orders below both.</figcaption>
+  </figure>
+
+  <p class="note">On the name. In a crossover trial, a carryover effect is the residue of one treatment period on the next. Here the residue is the cache's: a representation of a computation that is not the reader's own, carried into the reader's next token.</p>
+
+  <h2>The weights axis</h2>
+  <p>A policy at GRPO step <i>g</i> reads the cache its step-0 self wrote. On text the trainer never touched, the stale and fresh readers agree to within the sealed band at every lag; on the prompts the trainer optimises, they part at the first step.</p>
+  <figure class="l-middle"><div class="chart"><canvas id="cKL"></canvas></div>
+    <figcaption><b>Median per-token KL of the stale-cache reader against its fresh self, by lag, log scale.</b> Held-out corpus and the benchmark's agentic windows on one Qwen2.5-1.5B trajectory; the policy's own prompts on three families. Dashed: the sealed HOLDS_B edge at 1e-3 nats.
+    <span class="cite">lag-ladder entries 0018 (seed 1), 0032 (Llama-3.2-3B), 0037 (SmolLM3-3B), 0036 (agentic windows) · summaries <span id="shaW"></span></span></figcaption></figure>
+
+  <h2>The text axis</h2>
+  <p>At a handoff the receiver re-renders its prompt from text the sender processed, and reads the sender's cache on the tokens that match. The oracle removal fraction is the share of those tokens an oracle sorting by deviation must remove before the mean key deviation of the rest falls within the tolerance; it is a distance from the reader's own computation, not a recomputation budget.</p>
+  <figure class="l-middle"><div class="tbl"><table id="tCells"><thead><tr><th>Cell</th><th>Entry</th><th>Handoffs</th><th>Same-model median f*</th><th>Cross-model median f*</th></tr></thead><tbody></tbody></table></div>
+    <figcaption><b>The four pair cells.</b> Same-model reuse removes nothing; the cross-model map removes most of the matched tokens. The two further receivers of entry 0048 (Qwen3-4B, SmolLM3-3B; same-model only) also read a median of 0.
+    <span class="cite" id="shaT"></span></figcaption></figure>
+
+  <h2>The record</h2>
+  <p>Every figure in the abstract stands on an entry of one of two public, append-only, hash-chained ledgers, each entry registered before the run it reads was made. The table gives the entry and line each sentence rests on. The line numbers are stable because nothing on a ledger is edited after it is appended; a figure that changes re-enters only through a later entry.</p>
+  <figure class="l-middle"><div class="tbl"><table class="rec">
+    <thead><tr><th>#</th><th>Sentence</th><th>Entry and line</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td><span class="axis both"></span>A carryover effect is what a model shows …</td><td class="r">linear-ceiling <b>0058:3800</b></td></tr>
+      <tr><td class="n">2</td><td><span class="axis both"></span>The systems that serve and train long-horizon agents …</td><td class="r">linear-ceiling 0036 · lag-ladder 0010, 0016</td></tr>
+      <tr><td class="n">3</td><td><span class="axis both"></span>We ask what predicts the effect …</td><td class="r">two records, one per axis</td></tr>
+      <tr><td class="n">4</td><td><span class="axis carry"></span>On the text axis, the record is 35 coding-agent handoffs …</td><td class="r">linear-ceiling <b>0036:2119–2120</b></td></tr>
+      <tr><td class="n">5</td><td><span class="axis carry"></span>For each, we measure the oracle removal fraction …</td><td class="r">linear-ceiling <b>0058:3800</b>, <b>0023:1302</b></td></tr>
+      <tr><td class="n">6</td><td><span class="axis carry"></span>Under same-model reuse, the fraction is zero on every one of the 35 handoffs.</td><td class="r">linear-ceiling 0036, <b>0045:3017</b></td></tr>
+      <tr><td class="n">7</td><td><span class="axis carry"></span>Its median is zero as well on shorter handoffs …</td><td class="r">linear-ceiling <b>0060:4050</b>, <b>0048:3716–3719</b></td></tr>
+      <tr><td class="n">8</td><td><span class="axis carry"></span>Across the four pair cells, the cross-model map must remove 73% to 96% …</td><td class="r">linear-ceiling <b>0044:2975</b>, 0051, <b>0029:1801</b>, <b>0036:2220</b>, <b>0057:4001–4007</b></td></tr>
+      <tr><td class="n">9</td><td><span class="axis hold"></span>On the weights axis, a policy reads a cache that its own earlier weights wrote …</td><td class="r">lag-ladder <b>0017:693</b>, 0018</td></tr>
+      <tr><td class="n">10</td><td><span class="axis hold"></span>On held-out text, the per-token KL stays inside the registered band …</td><td class="r">lag-ladder <b>0018:760</b>, <b>0029:1260</b>, <b>0032:1502</b>, <b>0037:1901</b></td></tr>
+      <tr><td class="n">11</td><td><span class="axis hold"></span>On the policy's own prompts, it sits three to four orders of magnitude higher …</td><td class="r">lag-ladder <b>0018:763–764</b>, <b>0029:1270–1271</b>, <b>0032:1505–1511</b>, <b>0037:1904–1905</b>, <b>0027:1151</b></td></tr>
+      <tr><td class="n">12</td><td><span class="axis hold"></span>At 32 steps, the stale cache costs the trained policy six of the seven accuracy points …</td><td class="r">lag-ladder <b>0027:1159–1161</b></td></tr>
+      <tr><td class="n">13</td><td><span class="axis hold"></span>In the opening windows of the agent trajectories that MLPerf Agentic Inference serves …</td><td class="r">lag-ladder <b>0036:1819–1822</b>, <b>1843</b></td></tr>
+      <tr><td class="n">14</td><td><span class="axis both"></span>At their operating extremes, the two axes land in the same decade …</td><td class="r">linear-ceiling <b>0049:3761</b> · lag-ladder <b>0018:763–764</b></td></tr>
+      <tr><td class="n">15</td><td><span class="axis both"></span>The text's relation to the computation that wrote the cache predicts the carryover effect …</td><td class="r">lag-ladder <b>0010:409–412</b> · linear-ceiling <b>0060:4043</b>, 0057, <b>0038:2366</b></td></tr>
+    </tbody>
+  </table></div></figure>
+</article>
+
+<div class="appendix">
+  <h3 id="citation">Citation</h3>
+  <p>For attribution in academic contexts, please cite this work as</p>
+  <pre class="citation">The citation is added here when the camera-ready is public (13 November 2026).</pre>
+  <h3>Open source record</h3>
+  <p>The two records are public: <a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> (the text axis) and <a href="https://github.com/hossainpazooki/lag-ladder">the lag ladder</a> (the weights axis). This page is built from <code>data/figures.json</code>, whose <code>MANIFEST</code> names the summary file and sha behind every number drawn here; the source is at <a href="https://github.com/carryoverpub/carryoverpub.github.io">carryoverpub/carryoverpub.github.io</a>.</p>
+  <h3>Reuse</h3>
+  <p>Diagrams and text on this page are licensed under Creative Commons Attribution <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> once published. The two records carry their own licences.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/*__DATA__*/
+(function(){
+  Chart.defaults.color = "rgba(0,0,0,0.5)"; Chart.defaults.borderColor = "rgba(0,0,0,0.08)";
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif";
+  const W = DATA.weights, lags = W.qwen1.map(r => r.lag);
+  const ds = (label, arr, key, color, dash) => ({ label, data: arr.map(r => r[key]), borderColor: color, backgroundColor: color, borderDash: dash || [], pointRadius: 3.5, tension: 0 });
+  new Chart(document.getElementById("cKL"), { type: "line",
+    data: { labels: lags, datasets: [
+      ds("Held-out corpus, Qwen2.5-1.5B", W.qwen1, "corpus", "#2e7d32"),
+      ds("Benchmark windows, same trajectory", W.agentic, "kl", "#0b6e78"),
+      ds("Own prompts, Qwen2.5-1.5B", W.qwen1, "rollout", "#b4521c"),
+      ds("Own prompts, Llama-3.2-3B", W.llama, "rollout", "#b4521c", [6, 4]),
+      ds("Own prompts, SmolLM3-3B", W.smollm3, "rollout", "#b4521c", [2, 3]),
+      { label: "HOLDS_B edge, 1e-3", data: lags.map(() => W.band), borderColor: "rgba(0,0,0,0.45)", borderDash: [4, 4], pointRadius: 0, borderWidth: 1 },
+    ] },
+    options: { maintainAspectRatio: false, scales: { x: { title: { display: true, text: "GRPO lag (steps between writer and reader)" } },
+      y: { type: "logarithmic", min: 1e-7, max: 1, title: { display: true, text: "median per-token KL, nats" },
+           ticks: { callback: v => { const e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 ? (Math.round(e) === 0 ? "1" : "1e" + Math.round(e)) : null; } } } },
+      plugins: { legend: { position: "bottom", labels: { boxWidth: 18 } } } } });
+  document.getElementById("shaW").textContent = [W_FILES.ownrun, W_FILES.llama, W_FILES.smollm3].join(" · ");
+  const tb = document.querySelector("#tCells tbody");
+  tb.innerHTML = DATA.text.map(c => `<tr><td>${c.cell}</td><td>${c.entry}</td><td>${c.n}</td><td>${c.same.toFixed(4)}</td>
+    <td><div style="display:grid;grid-template-columns:3.4em 1fr;gap:10px;align-items:center;min-width:160px;"><span>${(c.cross*100).toFixed(1)}%</span><div class="bar"><i style="width:${(c.cross*100).toFixed(1)}%"></i></div></div></td></tr>`).join("");
+  document.getElementById("shaT").textContent = "summaries " + DATA.text.map(c => c.entry + " " + c.sha).join(" · ");
+})();
+</script>
