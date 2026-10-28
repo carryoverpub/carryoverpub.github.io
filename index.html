@@ -75,7 +75,7 @@ table { border-collapse: collapse; width: 100%; min-width: 560px; font: 15px/1.4
 table th { border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-weight: 600; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); }
 table td { border-bottom: 1px solid rgba(0, 0, 0, 0.05); vertical-align: top; }
 table th, table td { padding: 6px 10px 6px 0; }
-table.rec { table-layout: fixed; } table.rec th:first-child { width: 2.4em; } table.rec th:last-child { width: 42%; }
+table.bench { table-layout: fixed; min-width: 760px; } table.bench th:nth-child(1) { width: 22%; } table.bench th:nth-child(2) { width: 9%; } table.bench th:nth-child(3) { width: 33%; } table.bench th:nth-child(4) { width: 22%; } table.bench td b { font-weight: 600; color: var(--text); }
 td.n { color: var(--text-faint); }
 td.r { font-family: var(--mono); font-size: 12px; color: var(--text-faint); overflow-wrap: anywhere; }
 td.r b { font-weight: 400; color: var(--text); }
@@ -189,28 +189,19 @@ td.r b { font-weight: 400; color: var(--text); }
     <figcaption><b>The four pair cells.</b> Same-model reuse removes nothing; the cross-model map removes most of the matched tokens. The two further receivers of entry 0048 (Qwen3-4B, SmolLM3-3B; same-model only) also read a median of 0.
     <span class="cite" id="shaT"></span></figcaption></figure>
 
-  <h2>The record</h2>
-  <p>Every figure in the abstract stands on an entry of one of two public, append-only, hash-chained ledgers, each entry registered before the run it reads was made. The table gives the entry and line each sentence rests on. The line numbers are stable because nothing on a ledger is edited after it is appended; a figure that changes re-enters only through a later entry.</p>
-  <figure class="l-middle"><div class="tbl"><table class="rec">
-    <thead><tr><th>#</th><th>Sentence</th><th>Entry and line</th></tr></thead>
+  <h2>Benchmarks</h2>
+  <p>Five texts carry the measurements. Each is public, each enters a record through a registered entry, and none was written for this paper: the handoffs are what a leaderboard's agents actually did, the prompts are what the trainer actually optimises, and the benchmark windows are what an inference benchmark actually serves.</p>
+  <figure class="l-middle"><div class="tbl"><table class="bench">
+    <thead><tr><th>Text</th><th>Axis</th><th>What it supplies</th><th>Size as read</th><th>Entries</th></tr></thead>
     <tbody>
-      <tr><td class="n">1</td><td><span class="axis both"></span>A carryover effect is what a model shows …</td><td class="r">linear-ceiling <b>0058:3800</b></td></tr>
-      <tr><td class="n">2</td><td><span class="axis both"></span>The systems that serve and train long-horizon agents …</td><td class="r">linear-ceiling 0036 · lag-ladder 0010, 0016</td></tr>
-      <tr><td class="n">3</td><td><span class="axis both"></span>We ask what predicts the effect …</td><td class="r">two records, one per axis</td></tr>
-      <tr><td class="n">4</td><td><span class="axis carry"></span>On the text axis, the record is 35 coding-agent handoffs …</td><td class="r">linear-ceiling <b>0036:2119–2120</b></td></tr>
-      <tr><td class="n">5</td><td><span class="axis carry"></span>For each, we measure the oracle removal fraction …</td><td class="r">linear-ceiling <b>0058:3800</b>, <b>0023:1302</b></td></tr>
-      <tr><td class="n">6</td><td><span class="axis carry"></span>Under same-model reuse, the fraction is zero on every one of the 35 handoffs.</td><td class="r">linear-ceiling 0036, <b>0045:3017</b></td></tr>
-      <tr><td class="n">7</td><td><span class="axis carry"></span>Its median is zero as well on shorter handoffs …</td><td class="r">linear-ceiling <b>0060:4050</b>, <b>0048:3716–3719</b></td></tr>
-      <tr><td class="n">8</td><td><span class="axis carry"></span>Across the four pair cells, the cross-model map must remove 73% to 96% …</td><td class="r">linear-ceiling <b>0044:2975</b>, 0051, <b>0029:1801</b>, <b>0036:2220</b>, <b>0057:4001–4007</b></td></tr>
-      <tr><td class="n">9</td><td><span class="axis hold"></span>On the weights axis, a policy reads a cache that its own earlier weights wrote …</td><td class="r">lag-ladder <b>0017:693</b>, 0018</td></tr>
-      <tr><td class="n">10</td><td><span class="axis hold"></span>On held-out text, the per-token KL stays inside the registered band …</td><td class="r">lag-ladder <b>0018:760</b>, <b>0029:1260</b>, <b>0032:1502</b>, <b>0037:1901</b></td></tr>
-      <tr><td class="n">11</td><td><span class="axis hold"></span>On the policy's own prompts, it sits three to four orders of magnitude higher …</td><td class="r">lag-ladder <b>0018:763–764</b>, <b>0029:1270–1271</b>, <b>0032:1505–1511</b>, <b>0037:1904–1905</b>, <b>0027:1151</b></td></tr>
-      <tr><td class="n">12</td><td><span class="axis hold"></span>At 32 steps, the stale cache costs the trained policy six of the seven accuracy points …</td><td class="r">lag-ladder <b>0027:1159–1161</b></td></tr>
-      <tr><td class="n">13</td><td><span class="axis hold"></span>In the opening windows of the agent trajectories that MLPerf Agentic Inference serves …</td><td class="r">lag-ladder <b>0036:1819–1822</b>, <b>1843</b></td></tr>
-      <tr><td class="n">14</td><td><span class="axis both"></span>At their operating extremes, the two axes land in the same decade …</td><td class="r">linear-ceiling <b>0049:3761</b> · lag-ladder <b>0018:763–764</b></td></tr>
-      <tr><td class="n">15</td><td><span class="axis both"></span>The text's relation to the computation that wrote the cache predicts the carryover effect …</td><td class="r">lag-ladder <b>0010:409–412</b> · linear-ceiling <b>0060:4043</b>, 0057, <b>0038:2366</b></td></tr>
+      <tr><td><b>SWE-bench leaderboard trajectories</b><br>composio SWE-Kit submissions of 16 and 25 October 2024 (astropy and django instances)</td><td><span class="axis carry"></span>text</td><td>The recorded coding-agent handoffs: a Claude 3.5 Sonnet solve thread whose text an o1-mini stage then re-renders for summarisation and patch selection. The sender's history and the receiver's rebuilt prompt are the two sides of every handoff.</td><td>68 handoffs observed; 35 long (sender 35K to 80K tokens) and 25 short under the Qwen pair; 28 short and 32 long under the Llama pair</td><td class="r">linear-ceiling 0013, 0025, 0029, 0036, 0044, 0051</td></tr>
+      <tr><td><b>GSM8K</b><br>test split</td><td><span class="axis hold"></span>weights</td><td>The trainer's own prompts: the GRPO policy trains on GSM8K, so its rollouts are the text a stale cache meets in a pipelined trainer. Also the task endpoint (statistic C): whether the greedy answer changes and what the stale cache costs in accuracy.</td><td>1,319 test prompts, six readers (lags 1 to 32), greedy at a 256-token cap</td><td class="r">lag-ladder 0017, 0018, 0027</td></tr>
+      <tr><td><b>FineWeb-Edu</b><br>sample-10BT</td><td><span class="axis hold"></span>weights</td><td>Held-out prose the trainer never touched: the text on which stale and fresh readers agree to within the sealed band at every lag.</td><td>Ten held-out sequences of 1,024 tokens (reads at 256), shuffle seed 0, drawn once by the instrument</td><td class="r">lag-ladder 0005, 0016</td></tr>
+      <tr><td><b>The reader's own continuation</b><br>on-path text</td><td><span class="axis hold"></span>weights</td><td>Each reader's greedy continuation from the held-out prefixes: text of the reader's own making that is still not the trainer's, the second held-out reading.</td><td>Same ten prefixes, one continuation per reader</td><td class="r">lag-ladder 0016, 0019</td></tr>
+      <tr><td><b>MLPerf Agentic Inference</b><br>MLCommons, 613 trajectories: 113 DeepSWE coding traces and 500 Workato workflow conversations</td><td><span class="axis both"></span>both</td><td>What an agent inference benchmark serves. The opening windows are read under the stale-cache readers on the weights axis and registered for the cross-model mapper on the text axis, the same fifty windows on both records.</td><td>50 windows, 25 per suite, the first 1,024 tokens of each trajectory (median first user turn about 1,100 tokens)</td><td class="r">lag-ladder 0030, 0036 · linear-ceiling 0064</td></tr>
     </tbody>
-  </table></div></figure>
+  </table></div>
+    <figcaption><b>What each text is for.</b> Together they place the five readings of the opening figure: held-out prose and the benchmark windows are where the weights axis stays in band, the trainer's prompts are where it leaves it, and the handoffs are where the text axis is measured.</figcaption></figure>
 </article>
 
 <div class="appendix">
