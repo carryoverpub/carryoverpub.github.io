@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carryover Effects</title>
+<meta name="description" content="What a stale KV cache does to the model that reads it, across agent handoffs and policy updates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* One article, one column, in the shape of worldmodels.github.io: title, question, the abstract, the record. */
+:root {
+  --bg: #f7f6f2; --surface: #ffffff; --fg: #1b1a17; --muted: #5d5a52; --line: #d9d5cb;
+  --carry: #0b6e78; --hold: #b4521c;
+  --display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #15171a; --surface: #1e2126; --fg: #ece9e1; --muted: #a9a59a; --line: #363a41;
+  --carry: #4fb3bd; --hold: #e58a4c; color-scheme: dark; } }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 720px; margin: 0 auto; padding-block: 56px 72px; display: grid; gap: 40px; }
+header { display: grid; gap: 14px; }
+.eyebrow { text-transform: uppercase; letter-spacing: .09em; font-size: 12px; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(38px, 7vw, 60px); line-height: 1.02; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.question { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(20px, 3vw, 26px); line-height: 1.3; color: var(--muted); margin: 0; text-wrap: balance; }
+.byline { font-size: 15px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+nav.links { display: flex; flex-wrap: wrap; gap: 8px; }
+nav.links a { font-size: 14px; font-weight: 600; text-decoration: none; color: var(--fg); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+nav.links a:hover, nav.links a:focus-visible { border-color: var(--fg); outline: none; }
+nav.links a.soon { color: var(--muted); border-style: dashed; pointer-events: none; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.2; margin: 0 0 14px; }
+.abstract { font-family: var(--display); font-size: 19px; line-height: 1.55; }
+.abstract p { margin: 0 0 1em; }
+.abstract p:last-child { margin-bottom: 0; }
+.abstract .term { font-weight: 600; }
+.def { border-left: 4px solid var(--carry); padding: 2px 0 2px 18px; color: var(--muted); font-size: 16px; }
+.def b { color: var(--fg); font-weight: 600; }
+.record p { margin: 0 0 12px; max-width: 65ch; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; table-layout: fixed; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+th:first-child { width: 2.8em; } th:last-child { width: 42%; }
+td.n { color: var(--muted); font-variant-numeric: tabular-nums; }
+td.r { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+td.r b { font-weight: 400; color: var(--fg); }
+.axis { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.axis.carry { background: var(--carry); } .axis.hold { background: var(--hold); } .axis.both { background: var(--muted); }
+pre { font-family: var(--mono); font-size: 13px; line-height: 1.5; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; overflow-x: auto; margin: 0; color: var(--muted); }
+footer { font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 20px; display: grid; gap: 8px; }
+footer a { color: inherit; }
+a { color: inherit; }
+@media (max-width: 480px) { body { font-size: 16px; } .abstract { font-size: 17.5px; } main { padding-block: 36px 56px; gap: 32px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Carryover Effects</div>
+    <h1>Carryover Effects in Reused KV Caches Across Agent Handoffs and Policy Updates</h1>
+    <p class="question">What does a stale KV cache do to the model that reads it?</p>
+    <div class="byline">
+      <span>Workshop on Long-Context Foundation Models, camera-ready 13 November 2026</span>
+    </div>
+    <nav class="links" aria-label="Paper, record and code">
+      <a class="soon" href="#" aria-disabled="true">Paper (13 November)</a>
+      <a href="https://github.com/hossainpazooki/linear-ceiling">Record: text axis</a>
+      <a href="https://github.com/hossainpazooki/lag-ladder">Record: weights axis</a>
+      <a href="#cite">Cite</a>
+    </nav>
+  </header>
+
+  <section class="abstract" aria-labelledby="abs-h">
+    <h2 id="abs-h">Abstract</h2>
+    <p><span class="term">A carryover effect</span> is what a model shows when it reads a KV cache that another computation wrote: the text or the weights differ from the writer's, and the reader's next-token distribution shifts with them. The systems that serve and train long-horizon agents produce such reads by design, whenever a later stage rebuilds its prompt from text an earlier stage processed, or a pipelined trainer serves rollouts from a cache an earlier policy wrote. We ask what predicts the effect and measure it on two pre-registered records, one for the text axis and one for the weights axis.</p>
+    <p>On the text axis, the record is 35 coding-agent handoffs whose sender histories run from 35K to 80K tokens. For each, we measure the oracle removal fraction: the share of matched tokens we must remove before the mean key deviation of the remainder falls within a tolerance drawn from a cross-model map's held-out error. Under same-model reuse, the fraction is zero on every one of the 35 handoffs. Its median is zero as well on shorter handoffs, on a second model family, and at two further receivers. Across the four pair cells, the cross-model map must remove 73% to 96% of the matched tokens, and truncating the senders to the short cell's length leaves the deviation above the short cell's level.</p>
+    <p>On the weights axis, a policy reads a cache that its own earlier weights wrote, up to 32 GRPO steps later. On held-out text, the per-token KL stays inside the registered band on three model families and two seeds. On the policy's own prompts, it sits three to four orders of magnitude higher and is outside the band from the first step, where the stale cache already flips the greedy answer on 71% of GSM8K problems, and on 84% to 90% at later steps. At 32 steps, the stale cache costs the trained policy six of the seven accuracy points it had gained. In the opening windows of the agent trajectories that MLPerf Agentic Inference serves, per-token KL stays within the same band, three orders of magnitude below the policy's own prompts.</p>
+    <p>At their operating extremes, the two axes land in the same decade: a re-rendered handoff reads at a median of 0.14 nats with 90% greedy agreement, and a policy's own prompts at 32 steps read at 0.09 nats with 90%. The text's relation to the computation that wrote the cache predicts the carryover effect; weight distance, model family, and context length do not.</p>
+  </section>
+
+  <p class="def"><b>On the name.</b> In a crossover trial, a carryover effect is the residue of one treatment period on the next. Here the residue is the cache's: a representation of a computation that is not the reader's own, carried into the reader's next token.</p>
+
+  <section class="record" aria-labelledby="rec-h">
+    <h2 id="rec-h">The record</h2>
+    <p>Every figure in the abstract stands on an entry of one of two public, append-only, hash-chained ledgers, each entry registered before the run it reads was made. The table gives the entry and line each sentence rests on; the line numbers are stable because nothing on a ledger is edited after it is appended.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>#</th><th>Sentence</th><th>Entry and line</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td><span class="axis both"></span>A carryover effect is what a model shows …</td><td class="r">linear-ceiling <b>0058:3800</b></td></tr>
+        <tr><td class="n">2</td><td><span class="axis both"></span>The systems that serve and train long-horizon agents …</td><td class="r">linear-ceiling 0036 · lag-ladder 0010, 0016</td></tr>
+        <tr><td class="n">3</td><td><span class="axis both"></span>We ask what predicts the effect …</td><td class="r">two records, one per axis</td></tr>
+        <tr><td class="n">4</td><td><span class="axis carry"></span>On the text axis, the record is 35 coding-agent handoffs …</td><td class="r">linear-ceiling <b>0036:2119–2120</b></td></tr>
+        <tr><td class="n">5</td><td><span class="axis carry"></span>For each, we measure the oracle removal fraction …</td><td class="r">linear-ceiling <b>0058:3800</b>, <b>0023:1302</b></td></tr>
+        <tr><td class="n">6</td><td><span class="axis carry"></span>Under same-model reuse, the fraction is zero on every one of the 35 handoffs.</td><td class="r">linear-ceiling 0036, <b>0045:3017</b></td></tr>
+        <tr><td class="n">7</td><td><span class="axis carry"></span>Its median is zero as well on shorter handoffs …</td><td class="r">linear-ceiling <b>0060:4050</b>, <b>0048:3716–3719</b></td></tr>
+        <tr><td class="n">8</td><td><span class="axis carry"></span>Across the four pair cells, the cross-model map must remove 73% to 96% …</td><td class="r">linear-ceiling <b>0044:2975</b>, 0051, <b>0029:1801</b>, <b>0036:2220</b>, <b>0057:4001–4007</b></td></tr>
+        <tr><td class="n">9</td><td><span class="axis hold"></span>On the weights axis, a policy reads a cache that its own earlier weights wrote …</td><td class="r">lag-ladder <b>0017:693</b>, 0018</td></tr>
+        <tr><td class="n">10</td><td><span class="axis hold"></span>On held-out text, the per-token KL stays inside the registered band …</td><td class="r">lag-ladder <b>0018:760</b>, <b>0029:1260</b>, <b>0032:1502</b>, <b>0037:1901</b></td></tr>
+        <tr><td class="n">11</td><td><span class="axis hold"></span>On the policy's own prompts, it sits three to four orders of magnitude higher …</td><td class="r">lag-ladder <b>0018:763–764</b>, <b>0029:1270–1271</b>, <b>0032:1505–1511</b>, <b>0037:1904–1905</b>, <b>0027:1151</b></td></tr>
+        <tr><td class="n">12</td><td><span class="axis hold"></span>At 32 steps, the stale cache costs the trained policy six of the seven accuracy points …</td><td class="r">lag-ladder <b>0027:1159–1161</b></td></tr>
+        <tr><td class="n">13</td><td><span class="axis hold"></span>In the opening windows of the agent trajectories that MLPerf Agentic Inference serves …</td><td class="r">lag-ladder <b>0036:1819–1822</b>, <b>1843</b></td></tr>
+        <tr><td class="n">14</td><td><span class="axis both"></span>At their operating extremes, the two axes land in the same decade …</td><td class="r">linear-ceiling <b>0049:3761</b> · lag-ladder <b>0018:763–764</b></td></tr>
+        <tr><td class="n">15</td><td><span class="axis both"></span>The text's relation to the computation that wrote the cache predicts the carryover effect …</td><td class="r">lag-ladder <b>0010:409–412</b> · linear-ceiling <b>0060:4043</b>, 0057, <b>0038:2366</b></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="cite" aria-labelledby="cite-h">
+    <h2 id="cite-h">Citation</h2>
+    <pre>The BibTeX entry is added here when the camera-ready is public (13 November 2026).</pre>
+  </section>
+
+  <footer>
+    <div>Text and figures on this site are released under CC BY 4.0 once published. The two records carry their own licences.</div>
+    <div>Served from <a href="https://github.com/carryoverpub/carryoverpub.github.io">carryoverpub/carryoverpub.github.io</a>.</div>
+  </footer>
+</main>
+</body>
+</html>
