@@ -55,6 +55,7 @@ article hr { border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.2); margin-t
 .byline .label { text-transform: uppercase; letter-spacing: .05em; display: block; }
 .byline .value { color: var(--text-soft); display: block; }
 .byline a { border-bottom: none; } .byline a:hover { text-decoration: underline; }
+@media (min-width: 768px) { .byline > div:first-child { grid-column: 1 / -1; } }
 .links { font: 14px/1.4 var(--sans); display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; margin-bottom: 36px; }
 .links a { border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
 .links .soon { color: var(--text-faint); border-bottom: 1px dashed rgba(0, 0, 0, 0.3); }
@@ -125,9 +126,9 @@ td.r b { font-weight: 400; color: var(--text); }
   <h1>Carryover Effects in Reused KV Caches Across Agent Handoffs and Policy Updates</h1>
   <h2>What does a stale KV cache do to the model that reads it?</h2>
   <div class="byline l-page">
-    <div><span class="label">Authors</span><span class="value">Named with the camera-ready</span></div>
+    <div><span class="label">Authors</span><span class="value">Hossain Pazooki, Vikram Nadathur, Lingyuan Yan, Samuel Alake, Muhammad Zain Asad, Emerson Yu, Ritvik Aggarwal, Md Farhan Ishmam</span></div>
     <div><span class="label">Published</span><span class="value">13 November 2026</span></div>
-    <div><span class="label">Venue</span><span class="value">Workshop on Long-Context Foundation Models</span></div>
+    <div><span class="label">Venue</span><span class="value">NeurIPS 2026 Workshop on Long Context Foundation Models</span></div>
     <div><span class="label">Record</span><span class="value"><a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> · <a href="https://github.com/hossainpazooki/lag-ladder">lag-ladder</a></span></div>
   </div>
   <div class="links">
@@ -202,7 +203,14 @@ td.r b { font-weight: 400; color: var(--text); }
 <div class="appendix">
   <h3 id="citation">Citation</h3>
   <p>For attribution in academic contexts, please cite this work as</p>
-  <pre class="citation">The citation is added here when the camera-ready is public (13 November 2026).</pre>
+  <pre class="citation">@inproceedings{pazooki2026carryover,
+  title     = {Carryover Effects in Reused {KV} Caches Across Agent Handoffs and Policy Updates},
+  author    = {Pazooki, Hossain and Nadathur, Vikram and Yan, Lingyuan and Alake, Samuel and Asad, Muhammad Zain and Yu, Emerson and Aggarwal, Ritvik and Ishmam, Md Farhan},
+  booktitle = {NeurIPS 2026 Workshop on Long Context Foundation Models},
+  year      = {2026},
+  note      = {Non-archival; camera-ready 13 November 2026},
+  url       = {https://carryover.pub}
+}</pre>
   <h3>Open source record</h3>
   <p>The two records are public: <a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> (the text axis) and <a href="https://github.com/hossainpazooki/lag-ladder">the lag ladder</a> (the weights axis). This page is built from <code>data/figures.json</code>, whose <code>MANIFEST</code> names the summary file and sha behind every number drawn here; the source is at <a href="https://github.com/carryoverpub/carryoverpub.github.io">carryoverpub/carryoverpub.github.io</a>.</p>
   <h3>Reuse</h3>
