@@ -1,23 +1,26 @@
 <title>Carryover Blog Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 
 /* Format: worldmodels.github.io, i.e. the Distill v1 template: a full-viewport cover, then one 648px article column
-   (984px page, left-aligned on wide screens), Georgia paragraphs on a system-sans shell, hairline links, grey appendix.
+   (984px page, left-aligned on wide screens), IBM Plex Sans throughout (Nov 11: sans by request, departs from the template serif), hairline links, grey appendix.
    Light only, as the model is; every value below is the template's own where the template sets one. */
 :root {
   --text: rgba(0, 0, 0, 0.8); --text-soft: rgba(0, 0, 0, 0.6); --text-faint: rgba(0, 0, 0, 0.5); --rule: rgba(0, 0, 0, 0.1);
   --cover: #333333; --cover-text: #ffffff;
   --carry: #0b6e78; --carry-soft: rgba(11, 110, 120, 0.14); --hold: #b4521c; --good: #2e7d32; --bad: #b3261e;
-  --serif-title: HoeflerText-Regular, Cochin, Georgia, serif; --serif: Georgia, serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --mono: Menlo, Consolas, "Courier New", monospace;
+  --serif-title: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; --serif: var(--serif-title);
+  --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", Menlo, Consolas, "Courier New", monospace;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body { background: #ffffff; color: var(--text); font: 17px/1.55em var(--sans); overflow-x: hidden;
   padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
-@media (min-width: 1024px) { body { font-size: 20px; } }
+@media (min-width: 1024px) { body { font-size: 18px; } }
+article p, article li { line-height: 1.65em; }
 
 /* cover, as the model's full-screen demo with its dark overlay and white title */
 .cover { position: relative; min-height: 100vh; background: var(--cover); color: var(--cover-text); display: grid; align-content: center; justify-items: start;
@@ -36,14 +39,14 @@ article { display: block; padding-bottom: 72px; background: #ffffff; }
 article > * { width: auto; margin-left: 24px; margin-right: 24px; }
 @media (min-width: 768px) { article > * { width: 648px; margin-left: auto; margin-right: auto; } article > .l-page { width: min(984px, calc(100% - 48px)); } }
 @media (min-width: 1080px) { article > * { margin-left: calc(50% - 984px / 2); margin-right: 0; } article > .l-page { width: 984px; } article > .l-middle { width: 816px; } }
-article h1 { margin-top: 48px; margin-bottom: 12px; font-family: var(--serif-title); font-weight: 400; font-size: 40px; line-height: 1em; }
+article h1 { margin-top: 48px; margin-bottom: 12px; font-family: var(--serif-title); font-weight: 600; letter-spacing: -0.015em; font-size: 40px; line-height: 1em; }
 @media (min-width: 768px) { article h1 { font-size: 46px; } }
 @media (min-width: 1080px) { article h1 { font-size: 50px; letter-spacing: -0.02em; } }
 article h1 + h2 { font-weight: 300; font-size: 20px; line-height: 1.4em; margin-top: 8px; margin-bottom: 24px; font-family: var(--serif-title); }
 @media (min-width: 1080px) { article h1 + h2 { margin-top: 12px; font-size: 24px; } }
-article h2 { font-family: var(--serif-title); font-weight: 400; font-size: 26px; line-height: 1.25em; margin-top: 36px; margin-bottom: 24px; }
+article h2 { font-family: var(--serif-title); font-weight: 600; letter-spacing: -0.01em; font-size: 26px; line-height: 1.25em; margin-top: 36px; margin-bottom: 24px; }
 @media (min-width: 1024px) { article h2 { margin-top: 48px; font-size: 30px; } }
-article h3 { font-family: var(--serif-title); font-weight: 400; font-style: italic; font-size: 20px; line-height: 1.4em; margin-top: 36px; margin-bottom: 18px; }
+article h3 { font-family: var(--serif-title); font-weight: 500; font-style: normal; font-size: 20px; line-height: 1.4em; margin-top: 36px; margin-bottom: 18px; }
 @media (min-width: 1024px) { article h3 { font-size: 26px; } }
 article p, article ul, article ol { margin-top: 0; margin-bottom: 24px; font-family: var(--serif); }
 article a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
