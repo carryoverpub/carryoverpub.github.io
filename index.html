@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="What a stale KV cache does to the model that reads it, across agent handoffs and policy updates.">
+<meta name="description" content="What a reused KV cache does to the model that reads it, across agent handoffs and policy updates.">
 <title>Carryover Effects</title>
 <style>
 /* Format: worldmodels.github.io, i.e. the Distill v1 template: a full-viewport cover, then one 648px article column
@@ -108,136 +108,51 @@ td.r b { font-weight: 400; color: var(--text); }
     </g>
   </svg>
   <div class="inner">
-    <h1 class="paper-title">Carryover Effects in Reused KV Caches Across Agent Handoffs and Policy Updates</h1>
-    <p class="venue-short">NeurIPS 2026<br>LCFM Workshop</p>
+    <h1 class="paper-title">Carryover Effects in KV Caches Reused in Agentic Workflows and RL Training</h1>
+    <p class="venue-short">NeurIPS 2026<br>Workshop</p>
     <div class="rule"></div>
-    <p class="venue-long">Fortieth Annual Conference on<br>Neural Information Processing Systems<br>Atlanta, USA</p>
+    <p class="venue-long">40th Conference on<br>Neural Information Processing Systems<br>Workshop: Long Context Foundation Models</p>
   </div>
   <div class="scroll-down">Scroll<span></span></div>
 </div>
 
 <article>
-  <h1>Carryover Effects in Reused KV Caches Across Agent Handoffs and Policy Updates</h1>
-  <h2>What does a stale KV cache do to the model that reads it?</h2>
+  <h1>Carryover Effects in KV Caches Reused in Agentic Workflows and RL Training</h1>
+  <h2>What does a reused KV cache do to the model that reads it?</h2>
   <div class="byline l-page">
     <div><span class="label">Authors</span><span class="value">Hossain Pazooki, Vikram Nadathur, Lingyuan Yan, Samuel Alake, Muhammad Zain Asad, Emerson Yu, Ritvik Aggarwal, Md Farhan Ishmam</span></div>
-    <div><span class="label">Published</span><span class="value">13 November 2026</span></div>
     <div><span class="label">Venue</span><span class="value">NeurIPS 2026 Workshop on Long Context Foundation Models</span></div>
-    <div><span class="label">Record</span><span class="value"><a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> · <a href="https://github.com/hossainpazooki/lag-ladder">lag-ladder</a></span></div>
+    <div><span class="label">Code and ledgers</span><span class="value"><a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> · <a href="https://github.com/hossainpazooki/lag-ladder">lag-ladder</a></span></div>
   </div>
   <div class="links">
-    <span class="soon">Paper (13 November)</span>
-    <a href="https://github.com/hossainpazooki/linear-ceiling">Record: text axis</a>
-    <a href="https://github.com/hossainpazooki/lag-ladder">Record: weights axis</a>
+    <a href="https://github.com/hossainpazooki/linear-ceiling">Code and ledger: text axis</a>
+    <a href="https://github.com/hossainpazooki/lag-ladder">Code and ledger: weights axis</a>
     <a href="#citation">Cite</a>
   </div>
 
   <h2>Abstract</h2>
-  <p>A carryover effect is what a model shows when it reads a KV cache that another computation wrote: the text or the weights differ from the writer's, and the reader's next-token distribution shifts with them. The systems that serve and train long-horizon agents produce such reads by design, whenever a later stage rebuilds its prompt from text an earlier stage processed, or a pipelined trainer serves rollouts from a cache an earlier policy wrote. We ask what predicts the effect and measure it on two pre-registered records, one for the text axis and one for the weights axis.</p>
-  <p>On the text axis, the record is 35 coding-agent handoffs whose sender histories run from 35K to 80K tokens. For each, we measure the oracle removal fraction: the share of matched tokens we must remove before the mean key deviation of the remainder falls within a tolerance drawn from a cross-model map's held-out error. Under same-model reuse, the fraction is zero on every one of the 35 handoffs. Its median is zero as well on shorter handoffs, on a second model family, and at two further receivers. Across the four pair cells, the cross-model map must remove 73% to 96% of the matched tokens, and truncating the senders to the short cell's length leaves the deviation above the short cell's level.</p>
-  <p>On the weights axis, a policy reads a cache that its own earlier weights wrote, up to 32 GRPO steps later. On held-out text, the per-token KL stays inside the registered band on three model families and two seeds. On the policy's own prompts, it sits three to four orders of magnitude higher and is outside the band from the first step, where the stale cache already flips the greedy answer on 71% of GSM8K problems, and on 84% to 90% at later steps. At 32 steps, the stale cache costs the trained policy six of the seven accuracy points it had gained. In the opening windows of the agent trajectories that MLPerf Agentic Inference serves, per-token KL stays within the same band, three orders of magnitude below the policy's own prompts.</p>
-  <p>At their operating extremes, the two axes land in the same decade: a re-rendered handoff reads at a median of 0.14 nats with 90% greedy agreement, and a policy's own prompts at 32 steps read at 0.09 nats with 90%. The text's relation to the computation that wrote the cache predicts the carryover effect; weight distance, model family, and context length do not.</p>
+  <p>A carryover effect occurs when a model reads a KV cache that another computation wrote: the text or weights differ from the writer's, and the reader's next-token distribution shifts as a result. Prior work shows that reusing a cache at new positions or across weight updates can change a model's outputs. We ask what predicts the size of this effect, and we measure it in two pre-registered records: agent handoffs and policy updates.</p>
+  <p>The oracle removal fraction is the smallest share of matched tokens, ranked by deviation from a fresh cache, as in CacheBlend's analysis, whose removal brings the remaining keys' mean deviation within a cross-model map's held-out error. At agent handoffs, a cache written by the reader's own model has a removal fraction of zero on the median handoff of every cohort. The reader's per-token KL divergence compares its predictions under the reused cache and a fresh one; PipelineRL and CacheReforge report related KL divergences for stale caches. On 35 long coding-agent handoffs, each with a same-model removal fraction of zero, the reader's mean per-token KL(fresh ‖ reused) has a median of 0.14 nats, with no threshold registered.</p>
+  <p>Across GRPO policy updates in three model families, with the cache written before the first update, the same KL, as a median over sequences, stays under a registered threshold of 1e-3 nats on two held-out texts at every lag read, but on GSM8K rollouts sampled by the initial policy it is about 2,000 to 150,000 times as large as on those texts at the same lag and above the threshold after one update. With one Qwen2.5-1.5B run's policies, the KL also stays under the threshold at every lag read on the opening 1,024 tokens of fifty MLPerf Agentic Inference trajectories.</p>
+  <p>The greedy answer flip rate is the share of test problems whose final answer changes under the reused cache, a wider count than the flips reported for compressed models. In that run, the stale cache changes the greedy final answer on 71% of GSM8K test prompts after one update and on 84% to 90% at 2 to 32 updates. A reused cache should therefore be checked on the reader's predictions on the kind of text it will serve, not only on its keys or on held-out text, since in both records those checks passed while the predictions moved.</p>
 
-  <figure>
-    <svg viewBox="0 0 720 330" role="img" aria-label="Five readings of a reused cache, ordered by the reader's relation to the computation that wrote it, with the measured effect at each">
-      <g font-family="-apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif" fill="rgba(0,0,0,0.8)">
-        <text x="16" y="24" font-size="11.5" font-weight="600" letter-spacing=".08em" fill="rgba(0,0,0,0.5)">FIVE READINGS OF A REUSED CACHE, ORDERED BY THE READER'S RELATION TO THE WRITER</text>
-        <line x1="40" y1="64" x2="40" y2="306" stroke="rgba(0,0,0,0.15)" stroke-width="2"/>
-        <g font-size="14">
-          <circle cx="40" cy="74" r="7" fill="#2e7d32"/>
-          <text x="60" y="70" font-weight="600">Same computation</text>
-          <text x="60" y="88" font-size="13" fill="rgba(0,0,0,0.6)">identity control · removal fraction 0 · KL at the float16 floor</text>
-          <circle cx="40" cy="128" r="7" fill="#b4521c"/>
-          <text x="60" y="124" font-weight="600">Later weights, held-out text</text>
-          <text x="60" y="142" font-size="13" fill="rgba(0,0,0,0.6)">inside the 1e-3 band to 32 GRPO steps · three families, two seeds · the benchmark's windows too</text>
-          <circle cx="40" cy="182" r="7" fill="#0b6e78"/>
-          <text x="60" y="178" font-weight="600">Same weights, re-rendered handoff</text>
-          <text x="60" y="196" font-size="13" fill="rgba(0,0,0,0.6)">removal fraction 0 on all 35 · 0.14 nats and 90% greedy agreement at the reader</text>
-          <circle cx="40" cy="236" r="7" fill="#b4521c"/>
-          <text x="60" y="232" font-weight="600">Later weights, the policy's own prompts</text>
-          <text x="60" y="250" font-size="13" fill="rgba(0,0,0,0.6)">out of band from step 1 · 0.09 nats and 90% at step 32 · 71% of greedy answers flip at step 1</text>
-          <circle cx="40" cy="290" r="7" fill="#b3261e"/>
-          <text x="60" y="286" font-weight="600">Another model's cache, mapped</text>
-          <text x="60" y="304" font-size="13" fill="rgba(0,0,0,0.6)">73% to 96% of matched tokens must be removed · truncating the sender does not close the gap</text>
-        </g>
-      </g>
-    </svg>
-    <figcaption>The order is by what the reader is reading, not by how far the weights moved: a re-rendered handoff under the same weights and the policy's own prompts 32 steps later land in the same decade, while held-out text under those same later weights stays four orders below both.</figcaption>
-  </figure>
-
-  <p class="note">On the name. In a crossover trial, a carryover effect is the residue of one treatment period on the next. Here the residue is the cache's: a representation of a computation that is not the reader's own, carried into the reader's next token.</p>
-
-  <h2>The weights axis</h2>
-  <p>A policy at GRPO step <i>g</i> reads the cache its step-0 self wrote. On text the trainer never touched, the stale and fresh readers agree to within the sealed band at every lag; on the prompts the trainer optimises, they part at the first step.</p>
-  <figure class="l-middle"><div class="chart"><canvas id="cKL"></canvas></div>
-    <figcaption><b>Median per-token KL of the stale-cache reader against its fresh self, by lag, log scale.</b> Held-out corpus and the benchmark's agentic windows on one Qwen2.5-1.5B trajectory; the policy's own prompts on three families. Dashed: the sealed HOLDS_B edge at 1e-3 nats.
-    <span class="cite">lag-ladder entries 0018 (seed 1), 0032 (Llama-3.2-3B), 0037 (SmolLM3-3B), 0036 (agentic windows) · summaries <span id="shaW"></span></span></figcaption></figure>
-
-  <h2>The text axis</h2>
-  <p>At a handoff the receiver re-renders its prompt from text the sender processed, and reads the sender's cache on the tokens that match. The oracle removal fraction is the share of those tokens an oracle sorting by deviation must remove before the mean key deviation of the rest falls within the tolerance; it is a distance from the reader's own computation, not a recomputation budget.</p>
-  <figure class="l-middle"><div class="tbl"><table id="tCells"><thead><tr><th>Cell</th><th>Entry</th><th>Handoffs</th><th>Same-model median f*</th><th>Cross-model median f*</th></tr></thead><tbody></tbody></table></div>
-    <figcaption><b>The four pair cells.</b> Same-model reuse removes nothing; the cross-model map removes most of the matched tokens. The two further receivers of entry 0048 (Qwen3-4B, SmolLM3-3B; same-model only) also read a median of 0.
-    <span class="cite" id="shaT"></span></figcaption></figure>
-
-  <h2>Benchmarks</h2>
-  <p>Five texts carry the measurements. Each is public, each enters a record through a registered entry, and none was written for this paper: the handoffs are what a leaderboard's agents actually did, the prompts are what the trainer actually optimises, and the benchmark windows are what an inference benchmark actually serves.</p>
-  <figure class="l-middle"><div class="tbl"><table class="bench">
-    <thead><tr><th>Text</th><th>Axis</th><th>What it supplies</th><th>Size as read</th><th>Entries</th></tr></thead>
-    <tbody>
-      <tr><td><b>SWE-bench leaderboard trajectories</b><br>composio SWE-Kit submissions of 16 and 25 October 2024 (astropy and django instances)</td><td><span class="axis carry"></span>text</td><td>The recorded coding-agent handoffs: a Claude 3.5 Sonnet solve thread whose text an o1-mini stage then re-renders for summarisation and patch selection. The sender's history and the receiver's rebuilt prompt are the two sides of every handoff.</td><td>68 handoffs observed; 35 long (sender 35K to 80K tokens) and 25 short under the Qwen pair; 28 short and 32 long under the Llama pair</td><td class="r">linear-ceiling 0013, 0025, 0029, 0036, 0044, 0051</td></tr>
-      <tr><td><b>GSM8K</b><br>test split</td><td><span class="axis hold"></span>weights</td><td>The trainer's own prompts: the GRPO policy trains on GSM8K, so its rollouts are the text a stale cache meets in a pipelined trainer. Also the task endpoint (statistic C): whether the greedy answer changes and what the stale cache costs in accuracy.</td><td>1,319 test prompts, six readers (lags 1 to 32), greedy at a 256-token cap</td><td class="r">lag-ladder 0017, 0018, 0027</td></tr>
-      <tr><td><b>FineWeb-Edu</b><br>sample-10BT</td><td><span class="axis hold"></span>weights</td><td>Held-out prose the trainer never touched: the text on which stale and fresh readers agree to within the sealed band at every lag.</td><td>Ten held-out sequences of 1,024 tokens (reads at 256), shuffle seed 0, drawn once by the instrument</td><td class="r">lag-ladder 0005, 0016</td></tr>
-      <tr><td><b>The reader's own continuation</b><br>on-path text</td><td><span class="axis hold"></span>weights</td><td>Each reader's greedy continuation from the held-out prefixes: text of the reader's own making that is still not the trainer's, the second held-out reading.</td><td>Same ten prefixes, one continuation per reader</td><td class="r">lag-ladder 0016, 0019</td></tr>
-      <tr><td><b>MLPerf Agentic Inference</b><br>MLCommons, 613 trajectories: 113 DeepSWE coding traces and 500 Workato workflow conversations</td><td><span class="axis both"></span>both</td><td>What an agent inference benchmark serves. The opening windows are read under the stale-cache readers on the weights axis and registered for the cross-model mapper on the text axis, the same fifty windows on both records.</td><td>50 windows, 25 per suite, the first 1,024 tokens of each trajectory (median first user turn about 1,100 tokens)</td><td class="r">lag-ladder 0030, 0036 · linear-ceiling 0064</td></tr>
-    </tbody>
-  </table></div>
-    <figcaption><b>What each text is for.</b> Together they place the five readings of the opening figure: held-out prose and the benchmark windows are where the weights axis stays in band, the trainer's prompts are where it leaves it, and the handoffs are where the text axis is measured.</figcaption></figure>
 </article>
 
 <div class="appendix">
   <h3 id="citation">Citation</h3>
   <p>For attribution in academic contexts, please cite this work as</p>
   <pre class="citation">@inproceedings{pazooki2026carryover,
-  title     = {Carryover Effects in Reused {KV} Caches Across Agent Handoffs and Policy Updates},
+  title     = {Carryover Effects in {KV} Caches Reused in Agentic Workflows and {RL} Training},
   author    = {Pazooki, Hossain and Nadathur, Vikram and Yan, Lingyuan and Alake, Samuel and Asad, Muhammad Zain and Yu, Emerson and Aggarwal, Ritvik and Ishmam, Md Farhan},
   booktitle = {NeurIPS 2026 Workshop on Long Context Foundation Models},
   year      = {2026},
-  note      = {Non-archival; camera-ready 13 November 2026},
+  note      = {Non-archival},
   url       = {https://carryover.pub}
 }</pre>
   <h3>Open source record</h3>
-  <p>The two records are public: <a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> (the text axis) and <a href="https://github.com/hossainpazooki/lag-ladder">the lag ladder</a> (the weights axis). This page is built from <code>data/figures.json</code>, whose <code>MANIFEST</code> names the summary file and sha behind every number drawn here; the source is at <a href="https://github.com/carryoverpub/carryoverpub.github.io">carryoverpub/carryoverpub.github.io</a>.</p>
+  <p>The code and the ledger of each record are public: <a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> (the text axis; <a href="https://github.com/hossainpazooki/linear-ceiling/blob/main/ledger/ledger.md">ledger/ledger.md</a>) and <a href="https://github.com/hossainpazooki/lag-ladder">lag-ladder</a> (the weights axis; <a href="https://github.com/hossainpazooki/lag-ladder/blob/main/ledger/ledger.md">ledger/ledger.md</a>). The source is at <a href="https://github.com/carryoverpub/carryoverpub.github.io">carryoverpub/carryoverpub.github.io</a>.</p>
   <h3>Reuse</h3>
-  <p>Diagrams and text on this page are licensed under Creative Commons Attribution <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> once published. The two records carry their own licences.</p>
+  <p>Text on this page is licensed under Creative Commons Attribution <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>. The two records carry their own licences.</p>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-const DATA = {"weights": {"qwen1": [{"lag": 1, "corpus": 2.043284212239864e-07, "onpath": 1.2232949612826782e-07, "rollout": 0.004679106903489593, "agree": 0.9795625693730035}, {"lag": 2, "corpus": 5.177699016860327e-07, "onpath": 2.896229355309546e-07, "rollout": 0.013029200757240154, "agree": 0.9667765241756456}, {"lag": 4, "corpus": 1.4422700613386796e-06, "onpath": 7.159629660342601e-07, "rollout": 0.029369849307680232, "agree": 0.9491347113744654}, {"lag": 8, "corpus": 2.837407038588924e-06, "onpath": 1.6132963392145871e-06, "rollout": 0.06379572466746403, "agree": 0.9209779605352212}, {"lag": 16, "corpus": 4.852626956028394e-06, "onpath": 2.5305786890608e-06, "rollout": 0.08881501903335705, "agree": 0.9121631390776436}, {"lag": 32, "corpus": 6.646009999125568e-06, "onpath": 3.5423387226979353e-06, "rollout": 0.08914039763956683, "agree": 0.8982451802682874}], "qwen2": [{"lag": 1, "corpus": 1.7833106952420963e-07, "onpath": 1.0004642205874506e-07, "rollout": 0.003749725888074318, "agree": 0.983187249580378}, {"lag": 2, "corpus": 4.734658687090276e-07, "onpath": 2.2071488633805536e-07, "rollout": 0.011167602658786056, "agree": 0.9694753624316423}, {"lag": 4, "corpus": 1.1292674726437468e-06, "onpath": 5.610150670964931e-07, "rollout": 0.023454280117401475, "agree": 0.9502509272294114}, {"lag": 8, "corpus": 2.4423332720818758e-06, "onpath": 1.1911276543777327e-06, "rollout": 0.05638009727070549, "agree": 0.9283526661229627}, {"lag": 16, "corpus": 3.899197851296027e-06, "onpath": 1.8377285693413348e-06, "rollout": 0.08713920936877617, "agree": 0.9142514906735609}, {"lag": 32, "corpus": 4.628542232078259e-06, "onpath": 2.202576718932786e-06, "rollout": 0.09322368977068618, "agree": 0.9092841721262657}], "llama": [{"lag": 1, "corpus": 6.077974797347174e-07, "onpath": 4.359143952588026e-07, "rollout": 0.0011846001825771345, "agree": 0.9858295052681468}, {"lag": 2, "corpus": 1.792910460485242e-06, "onpath": 1.1228645303519233e-06, "rollout": 0.005279641337865577, "agree": 0.9698799518128162}, {"lag": 4, "corpus": 5.289704089667113e-06, "onpath": 3.5535341135661987e-06, "rollout": 0.020700394741918246, "agree": 0.9572208827284496}, {"lag": 8, "corpus": 1.0422274856022873e-05, "onpath": 8.487869493287864e-06, "rollout": 0.031050011537001834, "agree": 0.9419144054395933}, {"lag": 16, "corpus": 1.696023802612301e-05, "onpath": 1.427484529418913e-05, "rollout": 0.04485667658234917, "agree": 0.9301209677159428}, {"lag": 32, "corpus": 2.1007817726265143e-05, "onpath": 1.7784827786787214e-05, "rollout": 0.06144063025841347, "agree": 0.9159859241573365}], "smollm3": [{"lag": 1, "corpus": 3.4086496989924053e-07, "onpath": 2.4841340371828865e-07, "rollout": 0.002513706860229399, "agree": 0.9847553921625873}, {"lag": 2, "corpus": 1.0399114516550234e-06, "onpath": 6.944867089759416e-07, "rollout": 0.006065539012659382, "agree": 0.9795085575637138}, {"lag": 4, "corpus": 2.9327497002122616e-06, "onpath": 1.925585656949863e-06, "rollout": 0.015666293104487097, "agree": 0.9650970993767951}, {"lag": 8, "corpus": 7.19849099103248e-06, "onpath": 4.695323941403848e-06, "rollout": 0.04166085733800769, "agree": 0.9461873978801105}, {"lag": 16, "corpus": 1.3955311603142118e-05, "onpath": 9.510197157940048e-06, "rollout": 0.05744015254405691, "agree": 0.9284767892662597}, {"lag": 32, "corpus": 1.9864145289594237e-05, "onpath": 1.4952786780590699e-05, "rollout": 0.08441422127588763, "agree": 0.9162328949874002}], "agentic": [{"lag": 1, "kl": 3.60600858483745e-06, "agree": 0.998984375}, {"lag": 2, "kl": 7.561587411143277e-06, "agree": 0.99859375}, {"lag": 4, "kl": 2.1999756824014893e-05, "agree": 0.998125}, {"lag": 8, "kl": 4.8362308518143035e-05, "agree": 0.996875}, {"lag": 16, "kl": 9.421554568345841e-05, "agree": 0.9959375}, {"lag": 32, "kl": 0.00017618041175790702, "agree": 0.994765625}], "band": 0.001}, "task": [{"lag": 1, "flip": 0.7103866565579985, "lo": 0.6861068991660348, "hi": 0.7354245640636845, "acc_fresh": 5.458680818802123, "acc_stale": 4.700530705079606}, {"lag": 2, "flip": 0.8369977255496588, "lo": 0.8165276724791509, "hi": 0.8574677786201668, "acc_fresh": 5.458680818802123, "acc_stale": 4.473085670962851}, {"lag": 4, "flip": 0.8946171341925702, "lo": 0.8779378316906747, "hi": 0.9112964366944655, "acc_fresh": 4.548900682335103, "acc_stale": 5.610310841546626}, {"lag": 8, "flip": 0.8923426838514026, "lo": 0.8749052312357847, "hi": 0.909021986353298, "acc_fresh": 4.473085670962851, "acc_stale": 5.837755875663381}, {"lag": 16, "flip": 0.8635329795299469, "lo": 0.8438210765731615, "hi": 0.8817285822592873, "acc_fresh": 5.686125852918878, "acc_stale": 5.837755875663381}, {"lag": 32, "flip": 0.8688400303260045, "lo": 0.8506444275966641, "hi": 0.8862774829416225, "acc_fresh": 12.282031842304777, "acc_stale": 6.0652009097801365}], "text": [{"cell": "Qwen3-0.6B \u2192 1.7B, short", "entry": "0029", "n": 25, "same": 0.0, "cross": 0.9286491189906461, "cross_p10": 0.8579317269076305, "cross_p90": 0.9607383075238543, "sha": "ae461db872f2"}, {"cell": "Qwen3-0.6B \u2192 1.7B, long", "entry": "0036", "n": 35, "same": 0.0, "cross": 0.9639764831640834, "cross_p10": 0.9042658284687921, "cross_p90": 0.9903688218605345, "sha": "64e64e9318d4"}, {"cell": "Llama-3.2-3B \u2192 3.1-8B, short", "entry": "0044", "n": 28, "same": 0.0, "cross": 0.7316983535905717, "cross_p10": 0.6074298711144807, "cross_p90": 0.8515880083110715, "sha": "e1e5feb8aadd"}, {"cell": "Llama-3.2-3B \u2192 3.1-8B, long (native)", "entry": "0051", "n": 32, "same": 0.0, "cross": 0.762579903579945, "cross_p10": 0.596293237911735, "cross_p90": 0.9212032041850581, "sha": "1ac712b3897e"}], "cache": {"reuse": {"kl": 0.14243569180784374, "top1": 0.9019607843137255}, "random": {"kl": 11.298128778488946, "top1": 0.047058823529411764}, "scrambled": {"kl": 0.2825884119770622, "top1": 0.8549019607843137}}, "files": {"ll": {"distance/summary.json": "53f65ab75363", "reader/summary.json": "5d7615948589", "ownrun/summary.json": "f3b8f00ff6ed", "ownrun_seed2/summary.json": "3e051800b225", "ownrun_llama/summary_home.json": "e595ca111bd2", "ownrun_smollm3/summary.json": "5438a8cfd2dc", "ownrun_agentic/summary.json (home summarizer at 3add994)": "d91315247d79", "ownrun_controls/summary.json": "c72325b1a3ce", "ownrun_far/summary.json": "315348088e86", "ownrun_task/summary_home.json": "91c5c83cc814"}, "lc": {"cache-behavior/summary.json": "5228de0dd8c4", "e9l/summary.json": "64e64e9318d4", "e9/summary.json": "ae461db872f2", "e9f/summary.json": "e1e5feb8aadd", "e9fl/summary.json": "1ac712b3897e", "task-quality/pilot/summary.json": "4bd59e3352c8", "task-quality/pilot-widened/summary.json": "66213c02af83", "task-quality/items-e9l.json": "8153e9d30d04", "task-quality/items-e9.json": "96499cb24cb8"}}}; const W_FILES = {"ownrun": "ownrun f3b8f00ff6ed", "llama": "ownrun_llama e595ca111bd2", "smollm3": "ownrun_smollm3 5438a8cfd2dc"};
-(function(){
-  Chart.defaults.color = "rgba(0,0,0,0.5)"; Chart.defaults.borderColor = "rgba(0,0,0,0.08)";
-  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif";
-  const W = DATA.weights, lags = W.qwen1.map(r => r.lag);
-  const ds = (label, arr, key, color, dash) => ({ label, data: arr.map(r => r[key]), borderColor: color, backgroundColor: color, borderDash: dash || [], pointRadius: 3.5, tension: 0 });
-  new Chart(document.getElementById("cKL"), { type: "line",
-    data: { labels: lags, datasets: [
-      ds("Held-out corpus, Qwen2.5-1.5B", W.qwen1, "corpus", "#2e7d32"),
-      ds("Benchmark windows, same trajectory", W.agentic, "kl", "#0b6e78"),
-      ds("Own prompts, Qwen2.5-1.5B", W.qwen1, "rollout", "#b4521c"),
-      ds("Own prompts, Llama-3.2-3B", W.llama, "rollout", "#b4521c", [6, 4]),
-      ds("Own prompts, SmolLM3-3B", W.smollm3, "rollout", "#b4521c", [2, 3]),
-      { label: "HOLDS_B edge, 1e-3", data: lags.map(() => W.band), borderColor: "rgba(0,0,0,0.45)", borderDash: [4, 4], pointRadius: 0, borderWidth: 1 },
-    ] },
-    options: { maintainAspectRatio: false, scales: { x: { title: { display: true, text: "GRPO lag (steps between writer and reader)" } },
-      y: { type: "logarithmic", min: 1e-7, max: 1, title: { display: true, text: "median per-token KL, nats" },
-           ticks: { callback: v => { const e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 ? (Math.round(e) === 0 ? "1" : "1e" + Math.round(e)) : null; } } } },
-      plugins: { legend: { position: "bottom", labels: { boxWidth: 18 } } } } });
-  document.getElementById("shaW").textContent = [W_FILES.ownrun, W_FILES.llama, W_FILES.smollm3].join(" · ");
-  const tb = document.querySelector("#tCells tbody");
-  tb.innerHTML = DATA.text.map(c => `<tr><td>${c.cell}</td><td>${c.entry}</td><td>${c.n}</td><td>${c.same.toFixed(4)}</td>
-    <td><div style="display:grid;grid-template-columns:3.4em 1fr;gap:10px;align-items:center;min-width:160px;"><span>${(c.cross*100).toFixed(1)}%</span><div class="bar"><i style="width:${(c.cross*100).toFixed(1)}%"></i></div></div></td></tr>`).join("");
-  document.getElementById("shaT").textContent = "summaries " + DATA.text.map(c => c.entry + " " + c.sha).join(" · ");
-})();
-</script>
 </body>
 </html>

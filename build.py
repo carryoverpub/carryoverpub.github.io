@@ -27,7 +27,7 @@ if len(sys.argv) > 2 and sys.argv[1] == "--artifact":
 else:
     head = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-            '<meta name="description" content="What a stale KV cache does to the model that reads it, across agent handoffs and policy updates.">\n')
+            '<meta name="description" content="What a reused KV cache does to the model that reads it, across agent handoffs and policy updates.">\n')
     page = body.replace("<!--HEAD-->\n", head).replace("<!--ARTIFACT-META-->\n", "").replace("<!--/HEAD-->\n", "</head>\n<body>\n") + "</body>\n</html>\n"
     out = os.path.join(H, "index.html")
     open(out, "w", encoding="utf-8", newline="\n").write(page)
