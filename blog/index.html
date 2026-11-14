@@ -1,0 +1,654 @@
+<title>Carryover Blog Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* Format: worldmodels.github.io, i.e. the Distill v1 template: a full-viewport cover, then one 648px article column
+   (984px page, left-aligned on wide screens), IBM Plex Sans throughout (Nov 11: sans by request, departs from the template serif), hairline links, grey appendix.
+   Light only, as the model is; every value below is the template's own where the template sets one. */
+:root {
+  --text: rgba(0, 0, 0, 0.8); --text-soft: rgba(0, 0, 0, 0.6); --text-faint: rgba(0, 0, 0, 0.5); --rule: rgba(0, 0, 0, 0.1);
+  --cover: #333333; --cover-text: #ffffff;
+  --carry: #0b6e78; --carry-soft: rgba(11, 110, 120, 0.14); --hold: #b4521c; --other: #6b7075; --other-soft: #b9bdc1; --good: #2e7d32; --bad: #b3261e;
+  --serif-title: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; --serif: var(--serif-title);
+  --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", Menlo, Consolas, "Courier New", monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #ffffff; color: var(--text); font: 17px/1.55em var(--sans); overflow-x: hidden;
+  padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 1024px) { body { font-size: 18px; } }
+article p, article li { line-height: 1.65em; }
+
+/* cover, as the model's full-screen demo with its dark overlay and white title */
+.cover { position: relative; min-height: 100vh; background: var(--cover); color: var(--cover-text); display: grid; align-content: center; justify-items: start;
+  padding-block: 96px 120px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); overflow: hidden; }
+.cover svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .22; }
+.cover .inner { position: relative; width: 100%; max-width: 984px; margin: 0 auto; display: grid; gap: 0; justify-items: start; }
+.cover .paper-title { font: 300 clamp(30px, 4.6vw, 54px)/1.15 var(--sans); margin: 0 0 56px; max-width: 22ch; letter-spacing: .005em; }
+.cover .venue-short { font: 300 clamp(20px, 2.6vw, 30px)/1.25 var(--sans); margin: 0 0 22px; }
+.cover .rule { width: 116px; height: 3px; background: rgba(255, 255, 255, 0.45); margin: 0 0 26px; }
+.cover .venue-long { font: 300 clamp(16px, 2vw, 23px)/1.3 var(--sans); margin: 0; }
+.scroll-down { position: absolute; right: 10px; bottom: 10px; width: 80px; height: 40px; font: 300 12px/1 var(--sans); color: var(--cover-text); text-align: center; opacity: .9; }
+.scroll-down span { display: block; margin: 6px auto 0; width: 10px; height: 10px; border-right: 2px solid var(--cover-text); border-bottom: 2px solid var(--cover-text); transform: rotate(45deg); }
+
+/* article column (the template's .l-body rules) */
+article { display: block; padding-bottom: 72px; background: #ffffff; }
+article > * { width: auto; margin-left: 24px; margin-right: 24px; }
+@media (min-width: 768px) { article > * { width: 648px; margin-left: auto; margin-right: auto; } article > .l-page { width: min(984px, calc(100% - 48px)); } }
+@media (min-width: 1080px) { article > * { margin-left: calc(50% - 984px / 2); margin-right: 0; } article > .l-page { width: 984px; } article > .l-middle { width: 816px; } }
+article h1 { margin-top: 48px; margin-bottom: 12px; font-family: var(--serif-title); font-weight: 600; letter-spacing: -0.015em; font-size: 40px; line-height: 1em; }
+@media (min-width: 768px) { article h1 { font-size: 46px; } }
+@media (min-width: 1080px) { article h1 { font-size: 50px; letter-spacing: -0.02em; } }
+article h1 + h2 { font-weight: 300; font-size: 20px; line-height: 1.4em; margin-top: 8px; margin-bottom: 24px; font-family: var(--serif-title); }
+@media (min-width: 1080px) { article h1 + h2 { margin-top: 12px; font-size: 24px; } }
+article h2 { font-family: var(--serif-title); font-weight: 600; letter-spacing: -0.01em; font-size: 26px; line-height: 1.25em; margin-top: 36px; margin-bottom: 24px; }
+@media (min-width: 1024px) { article h2 { margin-top: 48px; font-size: 30px; } }
+article h3 { font-family: var(--serif-title); font-weight: 500; font-style: normal; font-size: 20px; line-height: 1.4em; margin-top: 36px; margin-bottom: 18px; }
+@media (min-width: 1024px) { article h3 { font-size: 26px; } }
+article p, article ul, article ol { margin-top: 0; margin-bottom: 24px; font-family: var(--serif); }
+article a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+article a:hover { border-bottom-color: rgba(0, 0, 0, 0.8); }
+article hr { border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.2); margin-top: 60px; margin-bottom: 60px; }
+.byline { font: 12px/18px var(--sans); color: var(--text-faint); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 12px 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; }
+.byline .label { text-transform: uppercase; letter-spacing: .05em; display: block; }
+.byline .value { color: var(--text-soft); display: block; }
+.byline a { border-bottom: none; } .byline a:hover { text-decoration: underline; }
+@media (min-width: 768px) { .byline > div:first-child { grid-column: 1 / -1; } }
+.links { font: 14px/1.4 var(--sans); display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; margin-bottom: 36px; }
+.links a { border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
+.links .soon { color: var(--text-faint); border-bottom: 1px dashed rgba(0, 0, 0, 0.3); }
+figure { position: relative; margin-top: 30px; margin-bottom: 30px; min-width: 0; }
+@media (min-width: 1024px) { figure { margin-top: 48px; margin-bottom: 48px; } }
+figure svg { width: 100%; height: auto; display: block; }
+figure .chart { position: relative; height: 380px; }
+figcaption { color: var(--text-soft); font: 12px/1.5em var(--sans); margin-top: 10px; }
+@media (min-width: 1024px) { figcaption { font-size: 13px; } }
+figcaption b { color: var(--text); font-weight: 600; }
+figcaption .cite { display: block; font-family: var(--mono); font-size: 11px; margin-top: 6px; color: var(--text-faint); overflow-wrap: anywhere; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font: 15px/1.45 var(--sans); font-variant-numeric: tabular-nums; }
+table th { border-bottom: 1px solid rgba(0, 0, 0, 0.1); font-weight: 600; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); }
+table td { border-bottom: 1px solid rgba(0, 0, 0, 0.05); vertical-align: top; }
+table th, table td { padding: 6px 10px 6px 0; }
+table.bench { table-layout: fixed; min-width: 760px; } table.bench th:nth-child(1) { width: 22%; } table.bench th:nth-child(2) { width: 9%; } table.bench th:nth-child(3) { width: 33%; } table.bench th:nth-child(4) { width: 22%; } table.bench td b { font-weight: 600; color: var(--text); }
+td.n { color: var(--text-faint); }
+td.r { font-family: var(--mono); font-size: 12px; color: var(--text-faint); overflow-wrap: anywhere; }
+td.r b { font-weight: 400; color: var(--text); }
+.bar { position: relative; height: 9px; background: var(--carry-soft); border-radius: 2px; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--carry); border-radius: 2px; }
+.axis { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.axis.carry { background: var(--carry); } .axis.hold { background: var(--hold); } .axis.both { background: var(--text-faint); }
+.note { font-family: var(--serif); font-size: .92em; color: var(--text-soft); border-left: 1px solid rgba(0, 0, 0, 0.2); padding-left: 18px; }
+
+/* appendix (the template's dt-appendix) */
+.appendix { display: block; font: 14px/24px var(--sans); border-top: 1px solid var(--rule); color: var(--text-faint); background: rgb(250, 250, 250); padding-top: 36px; padding-bottom: 60px; }
+.appendix > * { margin-left: 24px; margin-right: 24px; }
+@media (min-width: 768px) { .appendix > * { width: 648px; margin-left: auto; margin-right: auto; } }
+@media (min-width: 1080px) { .appendix > * { margin-left: calc(50% - 984px / 2); margin-right: 0; } }
+.appendix h3 { font: 500 16px/24px var(--sans); color: rgba(0, 0, 0, 0.65); margin: 18px auto; font-style: normal; }
+.appendix p { font-family: var(--sans); margin-bottom: 12px; }
+.appendix a { color: rgba(0, 0, 0, 0.6); border-bottom: 1px solid rgba(0, 0, 0, 0.2); text-decoration: none; }
+.appendix pre.citation { font: 11px/15px var(--mono); border: 1px solid var(--rule); background: rgba(0, 0, 0, 0.02); padding: 10px 18px; border-radius: 3px; color: rgb(150, 150, 150); overflow-x: auto; white-space: pre-wrap; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* Blog additions, built only from the site's own tokens. */
+:root { --fg: rgba(0,0,0,.8); --muted: rgba(0,0,0,.6); --bg: #ffffff; --panel: #f5f6f6; --accent: #0b6e78;
+  --warm: #e9b949; --hot: #b3261e; --cool: #cfe3e5; --placeholder: #8a5a00; --placeholder-bg: #fff6e0; }
+.cover { min-height: 72vh; }
+.draft { font: 13px/1.5 var(--sans); background: var(--placeholder-bg); color: var(--placeholder); padding: 10px 14px; border-radius: 3px; margin-top: 28px; }
+.ph { font: 11px/1.4 var(--mono); background: var(--placeholder-bg); color: var(--placeholder); padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+aside.side { font-family: var(--serif); font-size: .92em; color: var(--text-soft); border-left: 1px solid rgba(0,0,0,.2); padding-left: 18px; margin-bottom: 24px; }
+aside.side .label { display: block; font: 12px/18px var(--sans); text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); margin-bottom: 4px; }
+ul.habits { padding-left: 1.1em; }
+ul.habits li { margin-bottom: 10px; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption b { margin-right: 4px; }
+.svgwrap { overflow-x: auto; }
+.svgwrap svg { min-width: 560px; }
+svg text { font-family: var(--sans); fill: var(--fg); }
+svg .muted { fill: var(--muted); }
+.tag { font: 11px/1 var(--sans); letter-spacing: .05em; text-transform: uppercase; color: var(--text-faint); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 8px; }
+.oracle { padding: 4px 0 0; font-family: var(--sans); }
+.oracle-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: baseline; margin-bottom: 14px; }
+.oracle-head h3 { font: 600 16px/1.3 var(--sans); margin: 0; font-style: normal; color: var(--text); }
+.tokens { display: grid; grid-template-columns: repeat(30, minmax(0, 1fr)); gap: 3px; }
+.tok { aspect-ratio: 1 / 1.6; border-radius: 2px; position: relative; transition: opacity .25s, transform .25s; }
+.tok.removed { opacity: .12; transform: scale(.82); }
+.tok.seam::before { content: ""; position: absolute; left: -3px; top: -6px; bottom: -6px; width: 2px; background: var(--fg); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 12px 0 18px; align-items: center; }
+.swatch { display: inline-block; width: 46px; height: 10px; border-radius: 2px; background: linear-gradient(90deg, var(--cool), var(--warm), var(--hot)); vertical-align: middle; margin-right: 6px; }
+.seamkey { display: inline-block; width: 2px; height: 14px; background: var(--fg); vertical-align: middle; margin-right: 6px; }
+.controls { display: grid; gap: 14px; }
+.controls label { font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; gap: 12px; color: var(--text); }
+.controls label span { font-weight: 400; color: var(--muted); font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.gauge { position: relative; height: 14px; background: var(--carry-soft); border-radius: 2px; overflow: hidden; }
+.gauge .fill { position: absolute; inset: 0 auto 0 0; background: var(--hot); border-radius: 2px; transition: width .25s, background .25s; }
+.gauge .fill.ok { background: var(--accent); }
+.gauge .tol { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--fg); }
+.gauge-row { display: grid; gap: 6px; }
+.gauge-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); gap: 12px; }
+.status { font-size: 14px; min-height: 1.5em; color: var(--text); }
+.status.ok { color: var(--accent); }
+.stops { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: -8px; font-variant-numeric: tabular-nums; }
+.dotkey { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin-right: 6px; }
+#swarm .hd { transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .2s; cursor: pointer; stroke: #fff; stroke-width: 1; }
+#swarm .hd.dim { opacity: .28; }
+#swarm .hd.on { stroke: var(--fg); stroke-width: 2; }
+#swarm .hd:focus { outline: none; stroke: var(--fg); stroke-width: 2; }
+#swarm .mv { transition: x1 .6s, x2 .6s, x .6s; }
+@media (prefers-reduced-motion: reduce) { #swarm .hd, #swarm .mv { transition: none; } }
+.seam-head { font-size: 13px; color: var(--muted); margin: 18px 0 4px; }
+.seam-head b { color: var(--text); font-weight: 600; }
+#seams .sl-line { stroke: var(--carry); stroke-width: 1; opacity: .3; transition: opacity .2s, stroke-width .2s; }
+#seams .sl.dim .sl-line { opacity: .1; }
+#seams .sl.on .sl-line { opacity: 1; stroke-width: 2.5; }
+.demo-note { font-size: 12px; color: var(--text-faint); margin-top: 10px; }
+.figph { border: 1px dashed var(--placeholder); background: var(--placeholder-bg); padding: 18px; font: 14px/1.5 var(--sans); color: var(--text); }
+.figph strong { display: block; color: var(--placeholder); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 6px; }
+.math { font: 14px var(--mono); background: rgba(0,0,0,.04); padding: 1px 5px; border-radius: 3px; }
+@media (max-width: 520px) { .tokens { grid-template-columns: repeat(15, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .tok, .gauge .fill { transition: none; } }
+.ill-stage { border-radius: 4px; overflow: hidden; }
+.ill-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 12px; font: 14px/1.4 var(--sans); }
+.ill-controls button { font: 500 14px/1 var(--sans); color: var(--carry); background: #fff; border: 1px solid var(--carry); border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+.ill-controls button[aria-pressed="true"]#ill-toggle { background: var(--carry); color: #fff; }
+.ill-controls button:focus-visible { outline: 2px solid var(--carry); outline-offset: 2px; }
+.ill-hint { color: var(--text-faint); }
+svg.sketch text { font-family: "Caveat", "Comic Sans MS", cursive; }
+</style>
+<div class="cover" role="banner">
+  <svg class="bg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#ffffff" stroke-width="1" opacity=".35">
+      <polyline points="80,330 290,300 500,262 710,222 920,186 1120,150"/>
+      <polyline points="80,120 290,112 500,104 710,98 920,92 1120,88" stroke-dasharray="6 6"/>
+      <rect x="80" y="430" width="1040" height="26" rx="3"/><rect x="80" y="470" width="1040" height="26" rx="3"/>
+    </g>
+  </svg>
+  <div class="inner">
+    <h1 class="paper-title">Carryover, in plain words</h1>
+    <p class="venue-short">A blog companion to the paper</p>
+    <div class="rule"></div>
+    <p class="venue-long">NeurIPS 2026 · LCFM Workshop</p>
+  </div>
+  <div class="scroll-down">Scroll<span></span></div>
+</div>
+
+
+<article>
+  <h1>Carryover: when a model's memory no longer fits what it reads</h1>
+  <h2>A carryover effect is what happens when a model reads working memory that another computation wrote. We measured how much it moves the model's next word, at agent handoffs and across training.</h2>
+  <div class="byline l-page">
+    <div><span class="label">Authors</span><span class="value">Hossain Pazooki, Vikram Nadathur, Lingyuan Yan, Samuel Alake, Muhammad Zain Asad, Emerson Yu, Ritvik Aggarwal, Md Farhan Ishmam</span></div>
+    <div><span class="label">Companion to</span><span class="value"><a href="https://carryover.pub">Carryover Effects in Reused KV Caches</a></span></div>
+    <div><span class="label">Status</span><span class="value">Draft for the team</span></div>
+  </div>
+  <p class="draft">Draft for the team. Figure 1 is interactive. Figures 3 and 4 are drawings that show the idea. Figure 6 now plots each of the 35 long handoffs from the run's public data. Every number in the text and in Figures 7 to 10 comes from the paper's own record: the figures data on carryover.pub, the project ledger and the paper's abstract.</p>
+
+    
+      <p>You don't see the world fresh each moment. What reaches your eyes is patchy and a little late, so your brain fills in the rest from what it expects and what it remembers. Walk into your own kitchen in the dark and your hand finds the light switch without looking. That isn't sight. It's memory, recalled at the right moment, standing in for work your senses never did.</p>
+      <p>You can watch your brain do this. The square below never changes shade.</p>
+    <figure class="l-page" id="illusion">
+      <div class="ill-stage">
+        <svg id="ill-svg" viewBox="0 0 920 300" width="100%" role="img" aria-label="A wide panel shaded from black on the left to white on the right. A gray square slides back and forth across it. It looks lighter over the dark end and darker over the light end, though its gray never changes." style="display:block;max-width:920px;margin:0 auto;touch-action:none">
+          <defs>
+            <linearGradient id="ill-grad" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#0d0d0d"/><stop offset="1" stop-color="#f4f4f4"/></linearGradient>
+          </defs>
+          <rect id="ill-bg" x="0" y="0" width="920" height="300" fill="url(#ill-grad)"/>
+          <rect id="ill-flat" x="0" y="0" width="920" height="300" fill="#b9b9b9" opacity="0"/>
+          <rect id="ill-sq" x="40" y="95" width="110" height="110" fill="#808080" style="cursor:grab"/>
+        </svg>
+      </div>
+      <div class="ill-controls">
+        <button type="button" id="ill-toggle" aria-pressed="false">Hide the background</button>
+        <button type="button" id="ill-play" aria-pressed="true">Pause</button>
+        <span class="ill-hint">Drag the square to move it yourself.</span>
+      </div>
+      <figcaption><b>Figure 1</b>The square is one gray the whole way across. It looks lighter over the dark end and darker over the light end because your brain never reads the gray directly: it predicts what the square must be, given what surrounds it. Hide the background and the change disappears.</figcaption>
+    </figure>
+
+      <p>Seeing, then, is partly a prediction. This is a bargain, and mostly a good one. Recalling is cheaper than working things out again. But it only pays when the memory belongs to the situation you're in. Move house, and for a week your hand still reaches for a switch that is now a blank wall. The memory was accurate. It was just written for a different kitchen.</p>
+
+    <figure class="l-page">
+      <img src="kitchen.png" alt="Two comic panels. In the first, a person flips a wall switch and the ceiling lamp lights up. In the second, in a new home with a moving box on the floor, the same person presses a blank wall and the lamp stays dark, because here it has a pull cord." width="1754" height="896">
+      <figcaption><b>Figure 2</b>Most of what you do in a familiar room is memory, not sight.</figcaption>
+    </figure>
+
+    
+      <p>Language models strike the same bargain. As a model reads, it keeps a working memory of everything so far, called the KV cache, so it doesn't have to reread the whole page to write the next word. It holds the numbers the model computed for each word, a key and a value, not a summary or a recollection of the story. Reusing that memory is one of the main ways the field keeps AI fast and affordable.</p>
+      <p>The question is whether memory computed under one set of conditions still fits the next. Two things can change: the words around it, and the model reading it.</p>
+      <p>Take a coding agent working on a real GitHub issue. The job is long, so it passes from one model to the next: one reads the code, the next writes the fix. Passing the cache along saves the next model from rereading everything. That is the first axis we study: memory passed along a chain of tasks, from one reader to another.</p>
+      <p>Now take a model that is still learning. In reinforcement learning, a model practices, gets feedback and updates itself, often while earlier versions of itself are still generating practice runs. Those earlier versions leave memory behind, and the updated model may read it. That is the second axis: memory passed across time, from the model you were to the model you are now.</p>
+
+    <figure class="l-page">
+      <div class="svgwrap">
+        <svg class="sketch" viewBox="0 0 1720 715" width="100%" role="img" aria-label="Hand-drawn sketch in two panels. Panel A, along the task: a SWE-bench handoff. A GitHub issue goes to a first model, which reads the code, then to a next model, which writes the fix; the cache comes along. The transcript as written becomes the same content, rewritten: the words match, but where they sit has moved. Long handoffs run 35,000 to 80,000 tokens. Panel B, across training: GSM8K math. A model with no updates solves a grade-school word problem and writes memory; the same model after one update reads that old memory. Same words, the reader changed: in one run its final answer changed on 71% of problems." style="display:block;max-width:920px;margin:0 auto"><text x="20.0" y="55.0" font-size="50" text-anchor="start" font-weight="600" style="fill:#2b2b2b">A. Along the task</text><text x="20.0" y="97.0" font-size="31" text-anchor="start" font-weight="400" style="fill:#6b7075">a SWE-bench handoff</text><g transform="rotate(-2 133.0 235.0)"><path d="M 13.0 163.8 Q 131.9 162.8 248.4 164.0 Q 247.4 233.4 248.3 305.1 Q 132.5 304.5 17.2 304.5 Q 17.9 233.9 17.0 163.4" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 13.0 165.5 Q 132.6 165.5 246.8 165.4 Q 247.6 234.4 248.8 304.8 Q 132.7 304.3 18.2 304.1 Q 18.3 234.3 18.0 165.6" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="133.0" y="227.0" font-size="27" text-anchor="middle" transform="rotate(-2 133.0 235.0)" style="fill:#2b2b2b">GitHub issue</text><text x="133.0" y="260.8" font-size="27" text-anchor="middle" transform="rotate(-2 133.0 235.0)" style="fill:#2b2b2b">a real bug report</text><g transform="rotate(1 465.0 225.0)"><path d="M 347.9 155.5 Q 464.8 155.6 579.0 154.9 Q 579.5 226.3 578.5 295.7 Q 463.6 295.9 351.0 295.8 Q 351.1 225.0 349.6 156.0" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 345.1 155.5 Q 462.7 154.2 579.0 154.2 Q 579.5 225.7 578.3 295.8 Q 463.4 295.9 349.4 293.8 Q 347.9 223.9 348.2 154.9" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="465.0" y="217.0" font-size="27" text-anchor="middle" transform="rotate(1 465.0 225.0)" style="fill:#2b2b2b">First model</text><text x="465.0" y="250.8" font-size="27" text-anchor="middle" transform="rotate(1 465.0 225.0)" style="fill:#2b2b2b">reads the code</text><g transform="rotate(-1 795.0 245.0)"><path d="M 677.3 174.4 Q 794.8 173.4 908.9 175.1 Q 909.9 245.7 909.5 315.1 Q 794.6 315.7 680.9 315.1 Q 680.2 244.1 680.1 173.7" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 674.6 173.6 Q 793.2 173.3 909.1 175.2 Q 908.5 245.3 908.0 315.7 Q 794.0 314.5 680.8 313.5 Q 678.2 245.0 678.4 173.5" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="795.0" y="237.0" font-size="27" text-anchor="middle" transform="rotate(-1 795.0 245.0)" style="fill:#2b2b2b">Next model</text><text x="795.0" y="270.8" font-size="27" text-anchor="middle" transform="rotate(-1 795.0 245.0)" style="fill:#2b2b2b">writes the fix</text><path d="M 252.0 237.0 Q 300.4 242.3 346.0 225.0" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 346.0 225.0 l -13.9 -2.0" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 346.0 225.0 l -9.5 11.0" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 584.0 225.0 Q 627.8 245.0 676.0 243.0" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 676.0 243.0 l -12.3 -5.3" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 676.0 243.0 l -12.7 6.5" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><text x="465.0" y="337.0" font-size="29" text-anchor="middle" font-weight="400" style="fill:#0b6e78">the cache comes along</text><g transform="rotate(2 445.0 430.0)"><path d="M 317.1 396.4 Q 445.3 396.5 569.8 395.9 Q 569.4 428.9 568.9 463.8 Q 444.6 465.8 321.5 466.5 Q 321.0 432.4 319.5 395.7" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 316.6 394.6 Q 443.1 394.5 569.5 394.4 Q 570.3 430.1 570.0 466.6 Q 445.3 466.3 321.7 464.8 Q 319.9 430.6 319.4 393.7" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="445.0" y="438.6" font-size="26" text-anchor="middle" transform="rotate(2 445.0 430.0)" style="fill:#2b2b2b">transcript, as written</text><g transform="rotate(-2 750.0 450.0)"><path d="M 615.3 414.0 Q 749.2 413.8 881.9 416.2 Q 880.1 452.1 878.8 486.5 Q 751.0 485.1 621.2 485.3 Q 619.5 449.9 618.5 413.8" fill="none" stroke="#6b7075" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1" stroke-dasharray="9 7"/></g><text x="750.0" y="458.6" font-size="26" text-anchor="middle" transform="rotate(-2 750.0 450.0)" style="fill:#6b7075">same content, rewritten</text><path d="M 572.0 427.0 Q 601.7 422.6 616.0 449.0" fill="none" stroke="#0b6e78" stroke-width="1.8" stroke-linecap="round"/><path d="M 616.0 449.0 l -1.2 -13.3" stroke="#0b6e78" stroke-width="1.8" stroke-linecap="round"/><path d="M 616.0 449.0 l -11.6 -8.2" stroke="#0b6e78" stroke-width="1.8" stroke-linecap="round"/><text x="320.0" y="550.0" font-size="36" text-anchor="start" font-weight="400" style="fill:#2b2b2b">the words match,</text><text x="320.0" y="593.0" font-size="36" text-anchor="start" font-weight="400" style="fill:#2b2b2b">but where they sit has moved</text><text x="320.0" y="645.0" font-size="27" text-anchor="start" font-weight="400" style="fill:#6b7075">our long handoffs: 35,000 to 80,000 tokens</text><path d="M 980.0 -15.0 L 982.0 715.0" stroke="#6b7075" stroke-width="1.4" stroke-dasharray="3 7" stroke-linecap="round"/><text x="1060.0" y="55.0" font-size="50" text-anchor="start" font-weight="600" style="fill:#2b2b2b">B. Across training</text><text x="1060.0" y="97.0" font-size="31" text-anchor="start" font-weight="400" style="fill:#6b7075">GSM8K math</text><g transform="rotate(-1 1340.0 210.0)"><path d="M 1057.1 165.8 Q 1338.8 167.0 1619.4 166.3 Q 1620.4 210.9 1619.8 255.1 Q 1340.2 255.0 1059.6 253.5 Q 1059.6 209.3 1060.6 166.3" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 1057.0 165.9 Q 1340.7 166.4 1621.6 165.3 Q 1621.9 209.3 1620.4 255.5 Q 1341.0 254.4 1059.6 255.5 Q 1059.1 210.1 1059.7 166.0" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="1340.0" y="218.9" font-size="27" text-anchor="middle" transform="rotate(-1 1340.0 210.0)" style="fill:#2b2b2b">a grade-school math word problem</text><g transform="rotate(1 1190.0 405.0)"><path d="M 1057.0 337.0 Q 1189.7 336.0 1319.5 336.1 Q 1318.9 404.6 1320.5 473.7 Q 1190.1 474.7 1061.5 475.9 Q 1061.2 406.2 1060.3 336.1" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 1055.9 335.5 Q 1189.0 334.9 1318.5 337.0 Q 1320.5 406.0 1320.5 477.0 Q 1190.0 475.9 1058.2 473.7 Q 1060.0 404.5 1059.9 335.6" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="1190.0" y="397.0" font-size="27" text-anchor="middle" transform="rotate(1 1190.0 405.0)" style="fill:#2b2b2b">model, no updates</text><text x="1190.0" y="430.8" font-size="27" text-anchor="middle" transform="rotate(1 1190.0 405.0)" style="fill:#2b2b2b">solves it, writes memory</text><g transform="rotate(-1 1470.0 415.0)"><path d="M 1337.6 346.6 Q 1469.0 345.2 1598.7 345.8 Q 1597.7 415.3 1598.1 485.8 Q 1468.8 484.9 1340.2 484.2 Q 1340.1 414.5 1340.2 345.4" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 1337.2 343.3 Q 1470.0 345.1 1600.6 345.2 Q 1600.3 416.2 1598.8 485.3 Q 1470.7 484.7 1341.3 483.6 Q 1339.2 412.7 1338.7 343.7" fill="none" stroke="#2b2b2b" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="1470.0" y="407.0" font-size="27" text-anchor="middle" transform="rotate(-1 1470.0 415.0)" style="fill:#2b2b2b">after 1 update</text><text x="1470.0" y="440.8" font-size="27" text-anchor="middle" transform="rotate(-1 1470.0 415.0)" style="fill:#2b2b2b">reads the old memory</text><path d="M 1290.0 261.0 Q 1261.6 292.5 1240.0 329.0" fill="none" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 1240.0 329.0 l 11.3 -8.2" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><path d="M 1240.0 329.0 l 0.5 -13.4" stroke="#2b2b2b" stroke-width="1.8" stroke-linecap="round"/><g transform="rotate(-3 1165.0 585.0)"><path d="M 1097.4 556.3 Q 1166.4 555.0 1229.0 554.7 Q 1228.9 584.2 1228.7 614.7 Q 1164.1 614.9 1098.5 614.8 Q 1098.9 584.6 1100.7 555.4" fill="none" stroke="#0b6e78" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/><path d="M 1096.2 554.1 Q 1163.7 553.4 1230.0 553.7 Q 1230.4 585.0 1229.7 615.5 Q 1166.5 615.6 1101.1 615.9 Q 1098.8 584.5 1098.5 553.9" fill="none" stroke="#0b6e78" stroke-width="1.08" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></g><text x="1165.0" y="593.6" font-size="26" text-anchor="middle" transform="rotate(-3 1165.0 585.0)" style="fill:#0b6e78">memory</text><path d="M 1172.0 479.0 Q 1170.0 515.0 1168.0 551.0" fill="none" stroke="#6b7075" stroke-width="1.4" stroke-linecap="round"/><path d="M 1168.0 551.0 l 7.3 -11.7" stroke="#6b7075" stroke-width="1.4" stroke-linecap="round"/><path d="M 1168.0 551.0 l -5.3 -12.3" stroke="#6b7075" stroke-width="1.4" stroke-linecap="round"/><path d="M 1234.0 587.0 Q 1221.9 465.2 1336.0 421.0" fill="none" stroke="#0b6e78" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="9 8"/><path d="M 1336.0 421.0 l -13.7 -0.9" stroke="#0b6e78" stroke-width="2.2" stroke-linecap="round"/><path d="M 1336.0 421.0 l -9.9 9.5" stroke="#0b6e78" stroke-width="2.2" stroke-linecap="round"/><text x="1260.0" y="605.0" font-size="32" text-anchor="start" font-weight="400" style="fill:#2b2b2b">same words. the reader changed.</text><text x="1260.0" y="653.0" font-size="29" text-anchor="start" font-weight="400" style="fill:#0b6e78">in one run, its final answer changed</text><text x="1260.0" y="687.0" font-size="29" text-anchor="start" font-weight="400" style="fill:#0b6e78">on 71% of problems</text></svg>
+      </div>
+      <figcaption><b>Figure 3</b>Memory travels two ways. Left: a coding agent on SWE-bench, a benchmark of real GitHub issues, hands its work from one model to the next. Right: a model learning GSM8K grade-school math reads memory it wrote before it was updated. Sources: project ledger (handoffs); paper abstract (71%, one Qwen2.5-1.5B run).</figcaption>
+    </figure>
+
+    
+      <p>On both axes, the reader does what your hand did in the new kitchen: it trusts memory written for a slightly different world. We call the result a carryover effect, a term borrowed from crossover trials, where one treatment lingers into the next.</p>
+      <p>Our finding comes down to one warning: a check on the memory alone can pass while the model's answers move. It is the gray square again: the memory itself checks out, but the model reads it against new surroundings. A model reading its own rewritten memory passes our memory check on every handoff, yet its next-word predictions still shift a little. A model handed memory from a smaller model in its family has to throw most of it out. And a model in training barely notices stale memory on ordinary text, but on its own practice problems it changed its answer on most math questions after a single update.</p>
+      <p>How far, exactly? To measure it we use an idealized helper we call the Oracle. The rest of this post builds that idea up: first the agent model, then the Oracle, then what we found.</p>
+
+      <h2>Two ways memory goes stale</h2>
+      <p>Picture a coding agent fixing a bug. The job is too long for one pass, so it gets split up. A planner reads the issue, a worker edits files, a checker runs the tests. Every time the work changes hands, the next step gets the story so far.</p>
+      <p>But it rarely gets it word for word. The system rewrites the transcript: a new prompt template wraps it, a summary replaces a long stretch, a tool output gets trimmed. Most of the text survives. Some of it moves to a new position, and a few pieces are new. The memory the last step built is sitting right there, and reusing it is tempting.</p>
+
+    <figure class="l-page">
+      <svg viewBox="0 0 920 360" width="100%" role="img" aria-label="Three steps. One: each token the model reads leaves a key and value in memory. Two: at a handoff the receiver gets the same issue, plan and patch in new positions, with new instructions and a summary in place of a long tool output. Three: the receiver reuses memory for matched tokens and computes new tokens fresh; drift is worst just after each seam where matched text resumes." font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" style="display:block;max-width:920px;margin:0 auto"><circle cx="16" cy="13" r="11" fill="#1a1a1a"/><text x="16.0" y="17.0" font-size="12" fill="#fff" style="fill:#fff" text-anchor="middle" font-weight="700" >1</text><text x="36.0" y="18.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="600" >Reading builds memory<tspan fill="#5f6368" font-weight="400">, one entry per token</tspan></text><rect x="96" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="127.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Issue:</text><line x1="127.0" y1="58" x2="127.0" y2="68" stroke="#d9d9d6"/><rect x="105" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="129.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="162" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="193.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >login</text><line x1="193.0" y1="58" x2="193.0" y2="68" stroke="#d9d9d6"/><rect x="171" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="195.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="228" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="259.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >fails</text><line x1="259.0" y1="58" x2="259.0" y2="68" stroke="#d9d9d6"/><rect x="237" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="261.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="294" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="325.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >on</text><line x1="325.0" y1="58" x2="325.0" y2="68" stroke="#d9d9d6"/><rect x="303" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="327.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="360" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="391.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Safari</text><line x1="391.0" y1="58" x2="391.0" y2="68" stroke="#d9d9d6"/><rect x="369" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="393.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="426" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="457.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >·</text><line x1="457.0" y1="58" x2="457.0" y2="68" stroke="#d9d9d6"/><rect x="435" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="459.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="492" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="523.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Plan:</text><line x1="523.0" y1="58" x2="523.0" y2="68" stroke="#d9d9d6"/><rect x="501" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="525.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="558" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="589.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >patch</text><line x1="589.0" y1="58" x2="589.0" y2="68" stroke="#d9d9d6"/><rect x="567" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="591.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="624" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="655.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >the</text><line x1="655.0" y1="58" x2="655.0" y2="68" stroke="#d9d9d6"/><rect x="633" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="657.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="690" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="721.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >cookie</text><line x1="721.0" y1="58" x2="721.0" y2="68" stroke="#d9d9d6"/><rect x="699" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="723.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><rect x="756" y="34" width="62" height="24" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="787.0" y="50.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >check</text><line x1="787.0" y1="58" x2="787.0" y2="68" stroke="#d9d9d6"/><rect x="765" y="68" width="20.0" height="14" rx="3" fill="#0b6e78"/><rect x="789.0" y="68" width="20.0" height="14" rx="3" fill="#0b6e78" fill-opacity="0.55"/><text x="96.0" y="100.0" font-size="11" fill="#5f6368" text-anchor="start" font-weight="400" >text the model read</text><text x="818.0" y="100.0" font-size="11" fill="#0b6e78" text-anchor="end" font-weight="600" >its memory of each token: a key and a value (the KV cache)</text><circle cx="16" cy="133" r="11" fill="#1a1a1a"/><text x="16.0" y="137.0" font-size="12" fill="#fff" style="fill:#fff" text-anchor="middle" font-weight="700" >2</text><text x="36.0" y="138.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="600" >The handoff rewrites the text<tspan fill="#5f6368" font-weight="400">, most of it survives</tspan></text><text x="86.0" y="170.0" font-size="11" fill="#5f6368" text-anchor="end" font-weight="400" >sender</text><text x="86.0" y="230.0" font-size="11" fill="#5f6368" text-anchor="end" font-weight="400" >receiver</text><rect x="96" y="152" width="120" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="156.0" y="170.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Solver's instructions</text><rect x="220" y="152" width="150" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="295.0" y="170.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Issue text</text><rect x="374" y="152" width="170" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="459.0" y="170.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Long tool output</text><rect x="548" y="152" width="140" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="618.0" y="170.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Solver's plan</text><rect x="692" y="152" width="122" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="753.0" y="170.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Patch</text><rect x="96" y="212" width="150" height="28" rx="4" fill="#f2f2f0" stroke="#5f6368" stroke-dasharray="4 3"/><text x="171.0" y="230.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >New instructions</text><rect x="250" y="212" width="150" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="325.0" y="230.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Issue text</text><rect x="404" y="212" width="130" height="28" rx="4" fill="#f2f2f0" stroke="#5f6368" stroke-dasharray="4 3"/><text x="469.0" y="230.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Short summary</text><rect x="538" y="212" width="140" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="608.0" y="230.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Solver's plan</text><rect x="682" y="212" width="122" height="28" rx="4" fill="#fff" stroke="#d9d9d6"/><text x="743.0" y="230.0" font-size="11.5" fill="#1a1a1a" text-anchor="middle" font-weight="400" >Patch</text><path d="M295.0,180 C295.0,192 325.0,200 325.0,212" fill="none" stroke="#0b6e78" stroke-width="1.5"/><path d="M618.0,180 C618.0,192 608.0,200 608.0,212" fill="none" stroke="#0b6e78" stroke-width="1.5"/><path d="M753.0,180 C753.0,192 743.0,200 743.0,212" fill="none" stroke="#0b6e78" stroke-width="1.5"/><text x="822.0" y="170.0" font-size="11" fill="#0b6e78" text-anchor="start" font-weight="600" >same words,</text><text x="822.0" y="184.0" font-size="11" fill="#0b6e78" text-anchor="start" font-weight="600" >new spots</text><text x="822.0" y="224.0" font-size="11" fill="#5f6368" text-anchor="start" font-weight="600" >new words</text><text x="822.0" y="238.0" font-size="11" fill="#5f6368" text-anchor="start" font-weight="400" >(dashed)</text><circle cx="16" cy="263" r="11" fill="#1a1a1a"/><text x="16.0" y="267.0" font-size="12" fill="#fff" style="fill:#fff" text-anchor="middle" font-weight="700" >3</text><text x="36.0" y="268.0" font-size="13" fill="#1a1a1a" text-anchor="start" font-weight="600" >Reuse what matches<tspan fill="#5f6368" font-weight="400">, recompute the rest</tspan></text><rect x="96" y="296" width="20" height="26" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><rect x="119" y="296" width="20" height="26" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><rect x="142" y="296" width="20" height="26" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><rect x="165" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="165" y="284" width="20" height="8" rx="2" fill="#b4521c" fill-opacity="0.85"/><rect x="188" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="188" y="284" width="20" height="8" rx="2" fill="#b4521c" fill-opacity="0.55"/><rect x="211" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="211" y="284" width="20" height="8" rx="2" fill="#b4521c" fill-opacity="0.25"/><rect x="234" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="257" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="280" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="303" y="296" width="20" height="26" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><rect x="326" y="296" width="20" height="26" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><rect x="349" y="296" width="20" height="26" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><rect x="372" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="372" y="284" width="20" height="8" rx="2" fill="#b4521c" fill-opacity="0.85"/><rect x="395" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="395" y="284" width="20" height="8" rx="2" fill="#b4521c" fill-opacity="0.55"/><rect x="418" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="418" y="284" width="20" height="8" rx="2" fill="#b4521c" fill-opacity="0.25"/><rect x="441" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="464" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="487" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="510" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="533" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><rect x="556" y="296" width="20" height="26" rx="3" fill="#0b6e78"/><line x1="163.5" y1="276" x2="163.5" y2="330" stroke="#1a1a1a" stroke-width="1.5"/><text x="163.5" y="344.0" font-size="11" fill="#1a1a1a" text-anchor="middle" font-weight="600" >seam</text><line x1="370.5" y1="276" x2="370.5" y2="330" stroke="#1a1a1a" stroke-width="1.5"/><text x="370.5" y="344.0" font-size="11" fill="#1a1a1a" text-anchor="middle" font-weight="600" >seam</text><rect x="603" y="278" width="14" height="14" rx="3" fill="#0b6e78"/><text x="623.0" y="289.0" font-size="11.5" fill="#1a1a1a" text-anchor="start" font-weight="400" >reused memory</text><rect x="603" y="298" width="14" height="14" rx="3" fill="#fff" stroke="#5f6368" stroke-dasharray="3 2"/><text x="623.0" y="309.0" font-size="11.5" fill="#1a1a1a" text-anchor="start" font-weight="400" >computed fresh</text><rect x="603" y="320" width="14" height="6" rx="2" fill="#b4521c" fill-opacity="0.8"/><text x="623.0" y="327.0" font-size="11.5" fill="#1a1a1a" text-anchor="start" font-weight="400" >drift, worst just after a seam</text></svg>
+      <figcaption><b>Figure 4</b>How a handoff reuses memory. The model keeps a key and a value for every token it reads. At a handoff, the next step gets much of the same text in new places, plus some new text. Matched text reuses its memory, new text is computed fresh, and drift is worst just after each seam. Schematic, modeled on the recorded handoffs, where a coding agent's working thread is rewritten for a summarizing step.</figcaption>
+    </figure>
+
+      <p>We call memory <em>stale</em> when it was written under one condition and is read under another. In an agent system, two conditions can change.</p>
+      <p>The first is the words around it. The same sentence means slightly different things to a model depending on what came before it. Re-render the transcript and every cached token was written with a different past than the one the reader now sees. This is the context axis.</p>
+      <p>The second is the model reading it. In reinforcement learning, the policy keeps updating while older rollouts are still being used. A cache written by yesterday's policy gets read by today's. The words are the same and the reader has changed. This is the weights axis.</p>
+      <p>Put the two together and you get a plane. A fresh cache, written by the same model over the same words, sits at the origin. Position sits there too: when a token only moves to a new slot, the rotary encoding inside the model corrects for the move exactly. The interesting question is what happens once you leave the origin.</p>
+
+    <figure class="l-page">
+      <div class="svgwrap">
+        <svg viewBox="0 0 920 380" role="img" aria-label="A plane with two axes. The horizontal axis is how much the context changed, where agent handoffs sit. The vertical axis is how much the reader changed, where policy updates sit. A dot at the origin is labeled position, corrected exactly.">
+          <line x1="180" y1="320" x2="760" y2="320" stroke="var(--fg)" stroke-width="2.5" marker-end="url(#ah2)"/>
+          <line x1="180" y1="320" x2="180" y2="40" stroke="var(--fg)" stroke-width="2.5" marker-end="url(#ah2)"/>
+          <text x="760" y="352" text-anchor="end" font-size="15" font-weight="600">Context changed</text>
+          <text x="140" y="180" text-anchor="middle" font-size="15" font-weight="600" transform="rotate(-90 140 180)">Reader changed</text>
+          <circle cx="180" cy="320" r="9" fill="var(--accent)"/>
+          <text x="196" y="290" font-size="13" class="muted">Fresh cache, and position:</text>
+          <text x="196" y="306" font-size="13" class="muted">corrected exactly</text>
+          <g>
+            <rect x="420" y="214" width="230" height="48" rx="8" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>
+            <text x="535" y="243" text-anchor="middle" font-size="14">Agent handoffs</text>
+            <line x1="535" y1="262" x2="535" y2="316" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 4"/>
+          </g>
+          <g>
+            <rect x="196" y="96" width="200" height="48" rx="8" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>
+            <text x="296" y="125" text-anchor="middle" font-size="14">Policy updates</text>
+          </g>
+          <path d="M 560 200 C 600 170, 640 140, 680 112" stroke="var(--muted)" stroke-width="2" fill="none" stroke-dasharray="3 9" stroke-linecap="round"/>
+          <text x="690" y="104" font-size="13" class="muted">Both at once</text>
+          <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--fg)"/></marker></defs>
+        </svg>
+      </div>
+      <figcaption><b>Figure 5</b>The stale-memory plane. Agent handoffs move along the context axis, policy updates along the weights axis.</figcaption>
+    </figure>
+
+    
+      <aside class="side"><span class="label">Side note</span>Both axes compare reused memory with fresh memory. The context axis comes from real agent handoffs and is scored with the Oracle's tolerance. The weights axis comes from a model reading memory it wrote earlier in its own training, and is scored by how far its next-word predictions move.</aside>
+
+      <h2>The Oracle: how far is the memory from the reader?</h2>
+      <p>To know whether reused memory is close enough, you need something to compare it against. We have one: what the reader would have computed if it started fresh. For every token, we put the reused state next to the fresh one and measure the gap.</p>
+      <p>The gap is scaled by how much that part of the model normally moves around. A small difference in a part of the model that barely varies matters more than the same difference in a part that swings widely. Keys are compared after the position rotation is taken out, so a token that only moved is not counted as changed.</p>
+      <p>That gives every token a deviation score. Now set the worst tokens aside, one at a time, starting with the biggest gap. How many would you need to exclude before the average gap of what's left drops under an agreed tolerance? That share is the oracle removal fraction. It is a measurement, not a repair: it does not show that recomputing those tokens would fix the memory.</p>
+      <p>We call it an oracle because it cheats. It already knows the fresh answer, which a real system would not. So it measures disagreement, not cost. Think of it as a ruler, not a recipe. Try it below on the 35 long handoffs.</p>
+
+    <figure class="l-page">
+      <div class="oracle" id="oracle">
+        <div class="oracle-head">
+          <h3>The Oracle on 35 real handoffs</h3>
+        </div>
+        <div class="controls">
+          <label for="tauStop">Tolerance <span id="tauOut"></span></label>
+          <input type="range" id="tauStop" min="0" max="3" step="1" value="2" list="tauTicks" aria-describedby="tauNote">
+          <div class="stops" aria-hidden="true"><span>0.03</span><span>0.10</span><span>0.32</span><span>0.44</span></div>
+          <div class="status" id="tauNote" aria-live="polite"></div>
+        </div>
+        <div class="svgwrap"><svg id="swarm" viewBox="0 0 920 316" width="100%" role="img" aria-labelledby="swarmDesc"><desc id="swarmDesc">Each dot is one long handoff. The top row is the same model reading its own rewritten memory, the bottom row a different model reading it through the map. Horizontal position is the share of tokens the Oracle had to exclude at the chosen tolerance. A small chart on the right shows the median share at each recorded tolerance.</desc></svg></div>
+        <div class="svgwrap"><svg id="seams" viewBox="0 0 920 260" width="100%" role="img" aria-labelledby="seamDesc"><desc id="seamDesc">Thirty-five thin lines, one per long handoff, show the median deviation of the same-model reader at each distance from the last seam: 0, 1, 2 to 3, 4 to 7, 8 to 15 and 16 or more tokens. A bold line shows the median over all tokens. The gap is largest right after a seam and falls within a few tokens. A dashed line marks the selected tolerance.</desc></svg></div>
+      </div>
+      <figcaption><b>Figure 6</b>The Oracle's answer for every long handoff, at the four tolerances the run recorded. At the paper's tolerance of 0.32 the same-model reader needs nothing excluded on any of the 35; a different model needs most of the memory gone. Tighten the tolerance and the same-model handoffs spread out too. Hover or tap a dot or a line to follow one handoff through both panels. The lower panel shows why the same model passes at 0.32: the gap peaks in the first token or two after a seam, and on some handoffs that peak sits above the line, but the Oracle judges the average over the whole handoff, and most tokens sit far from any seam where the gap is small. Source: public run data for entries 0035 and 0036 (hossainpazooki/linear-ceiling-e9l-2026-09-10, results/e9l/summary.json), key read-out; seam distance counted back to the last seam.</figcaption>
+    </figure>
+
+    
+      <p>The tolerance matters, so we did not pick it after looking. We borrowed it from a mismatch we already understand: a small linear map that translates one model's memory into another's. Its error on held-out data sets the bar, one for keys and one for values. We also wrote down, before running anything, which removal fractions would count as low and which as high.</p>
+      <aside class="side"><span class="label">Side note</span>The tolerance comes from a cross-model map between two sizes of the same model family. It is a reference point, not a claim about what is safe for every task.</aside>
+
+      <h2>What we found</h2>
+      <p>We start with the context axis. We took real handoffs from public runs of a coding agent on SWE-bench, a benchmark built from real GitHub issues: 35 long ones, running 35,000 to 80,000 tokens each, and 25 shorter ones. None of the rewritten transcripts matched the original word for word. Then we asked the Oracle about each one.</p>
+      <p><strong>A model reading its own rewritten memory passes the memory check.</strong> When the same model wrote and read the memory, the Oracle had nothing to remove. Not one token, on any handoff, long or short. The same held for a second model family and for two more readers.</p>
+      <p><strong>A different model reading it is not.</strong> Hand the same memory to a different model, through the best translation we could fit, and most of it has to go: 73% to 96%, depending on the pair (Figure 9, left). Shorter transcripts did not fix it. What matters is who wrote the memory, not the text itself.</p>
+      <p><strong>The trouble lives at the seams.</strong> A seam is where the rewritten transcript picks the old text back up after something new. Drift peaks right after a seam and fades within a few tokens. Even at its peak it stayed under the tolerance, which is why nothing had to go (Figure 7).</p>
+
+    <figure class="l-page">
+      <svg viewBox="0 0 920 290" width="100%" role="img" aria-label="Line chart. Median deviation is highest right after a seam (0.24 short, 0.26 long) and falls to 0.02 and 0.06 sixteen or more tokens later. Every point is below the tolerance line at 0.32." style="display:block;max-width:920px;margin:0 auto"><text x="40.0" y="16.0" font-size="12" style="fill:#6b7075" text-anchor="start" font-weight="400">median deviation δ</text><line x1="48.0" y1="246.0" x2="750.0" y2="246.0" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="250.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">0.0</text><line x1="48.0" y1="184.3" x2="750.0" y2="184.3" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="188.3" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">0.1</text><line x1="48.0" y1="122.6" x2="750.0" y2="122.6" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="126.6" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">0.2</text><line x1="48.0" y1="60.9" x2="750.0" y2="60.9" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="64.9" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">0.3</text><line x1="48.0" y1="49.4" x2="750.0" y2="49.4" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="3 3"/><text x="760.0" y="53.4" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">tolerance, 0.32</text><text x="48.0" y="264.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">0</text><text x="188.4" y="264.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">1</text><text x="328.8" y="264.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">2–3</text><text x="469.2" y="264.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">4–7</text><text x="609.6" y="264.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">8–15</text><text x="750.0" y="264.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">16+</text><text x="750.0" y="284.0" font-size="12" style="fill:#6b7075" text-anchor="end" font-weight="400">tokens since the last seam →</text><polyline points="48.0,100.4 188.4,167.6 328.8,196.0 469.2,207.7 609.6,207.1 750.0,234.3" fill="none" stroke="#b9bdc1" stroke-width="1.5" stroke-linejoin="round"/><g><circle cx="48.0" cy="100.4" r="10" fill="transparent"/><circle cx="48.0" cy="100.4" r="3.5" style="fill:#b9bdc1"/><title>short handoffs, 0 tokens after a seam: median δ 0.236 over 2,278 tokens</title></g><g><circle cx="188.4" cy="167.6" r="10" fill="transparent"/><circle cx="188.4" cy="167.6" r="3.5" style="fill:#b9bdc1"/><title>short handoffs, 1 tokens after a seam: median δ 0.127 over 1,599 tokens</title></g><g><circle cx="328.8" cy="196.0" r="10" fill="transparent"/><circle cx="328.8" cy="196.0" r="3.5" style="fill:#b9bdc1"/><title>short handoffs, 2–3 tokens after a seam: median δ 0.081 over 2,571 tokens</title></g><g><circle cx="469.2" cy="207.7" r="10" fill="transparent"/><circle cx="469.2" cy="207.7" r="3.5" style="fill:#b9bdc1"/><title>short handoffs, 4–7 tokens after a seam: median δ 0.062 over 4,039 tokens</title></g><g><circle cx="609.6" cy="207.1" r="10" fill="transparent"/><circle cx="609.6" cy="207.1" r="3.5" style="fill:#b9bdc1"/><title>short handoffs, 8–15 tokens after a seam: median δ 0.063 over 5,480 tokens</title></g><g><circle cx="750.0" cy="234.3" r="10" fill="transparent"/><circle cx="750.0" cy="234.3" r="3.5" style="fill:#b9bdc1"/><title>short handoffs, 16+ tokens after a seam: median δ 0.019 over 139,290 tokens</title></g><polyline points="48.0,85.5 188.4,151.6 328.8,191.1 469.2,200.3 609.6,192.9 750.0,207.1" fill="none" stroke="#0b6e78" stroke-width="2" stroke-linejoin="round"/><g><circle cx="48.0" cy="85.5" r="10" fill="transparent"/><circle cx="48.0" cy="85.5" r="3.5" style="fill:#0b6e78"/><title>long handoffs, 0 tokens after a seam: median δ 0.260 over 4,050 tokens</title></g><g><circle cx="188.4" cy="151.6" r="10" fill="transparent"/><circle cx="188.4" cy="151.6" r="3.5" style="fill:#0b6e78"/><title>long handoffs, 1 tokens after a seam: median δ 0.153 over 2,956 tokens</title></g><g><circle cx="328.8" cy="191.1" r="10" fill="transparent"/><circle cx="328.8" cy="191.1" r="3.5" style="fill:#0b6e78"/><title>long handoffs, 2–3 tokens after a seam: median δ 0.089 over 4,624 tokens</title></g><g><circle cx="469.2" cy="200.3" r="10" fill="transparent"/><circle cx="469.2" cy="200.3" r="3.5" style="fill:#0b6e78"/><title>long handoffs, 4–7 tokens after a seam: median δ 0.074 over 7,224 tokens</title></g><g><circle cx="609.6" cy="192.9" r="10" fill="transparent"/><circle cx="609.6" cy="192.9" r="3.5" style="fill:#0b6e78"/><title>long handoffs, 8–15 tokens after a seam: median δ 0.086 over 9,451 tokens</title></g><g><circle cx="750.0" cy="207.1" r="10" fill="transparent"/><circle cx="750.0" cy="207.1" r="3.5" style="fill:#0b6e78"/><title>long handoffs, 16+ tokens after a seam: median δ 0.063 over 359,203 tokens</title></g><text x="760.0" y="203.1" font-size="12" style="fill:#0b6e78" text-anchor="start" font-weight="600">35 long handoffs</text><text x="760.0" y="246.3" font-size="12" style="fill:#6b7075" text-anchor="start" font-weight="400">25 short handoffs</text><text x="58.0" y="77.5" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400" font-style="italic">worst right after a seam</text></svg>
+      <figcaption><b>Figure 7</b>Deviation by distance from the last seam, same-model reader. Each point is the median over every matched token in that bin; hover for counts. Source: project ledger, entries 0029 (25 short handoffs) and 0036 (35 long handoffs).</figcaption>
+    </figure>
+
+    
+      <p><strong>The tolerance is a real choice.</strong> Make it ten times stricter and the Oracle starts removing, about half the tokens on the long handoffs. Anyone using this ruler should say where they set it.</p>
+      <p><strong>Close memory is not the same as the same answer.</strong> We also checked the word the model would write next. With reused memory it picked the same top word as with fresh memory at 9 in 10 positions, and its next-word odds still moved by a small, measurable amount: a median of 0.14 nats, a standard unit for how far two predictions differ. Then we tried two fakes with errors of the same size. Random noise almost never matched. Shuffling the right memories between tokens matched nearly as often as the real thing (Figure 8).</p>
+      <p>So two errors of the same size can have very different effects. Meeting the tolerance does not promise the model will say the same thing. Cache agreement and prediction agreement need separate checks.</p>
+      <p>This is the square from the top of the page. Checked token by token, reused memory matches fresh memory closely. Read in its new surroundings, it still led the model to a different next word at about 1 position in 10.</p>
+
+
+    <figure class="l-page">
+      <svg viewBox="0 0 920 170" width="100%" role="img" aria-label="Two bar charts. Reused memory: 0.14 nats and 90% agreement. Shuffled states: 0.28 nats and 86%. Random noise: 11.3 nats and 5%." style="display:block;max-width:920px;margin:0 auto"><text x="0.0" y="18.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="600">Divergence from fresh memory, nats (log scale)</text><line x1="151.2" y1="32.0" x2="151.2" y2="134.0" stroke="#ededeb" stroke-width="1"/><text x="151.2" y="150.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">0.1</text><line x1="255.0" y1="32.0" x2="255.0" y2="134.0" stroke="#ededeb" stroke-width="1"/><text x="255.0" y="150.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">1</text><line x1="358.8" y1="32.0" x2="358.8" y2="134.0" stroke="#ededeb" stroke-width="1"/><text x="358.8" y="150.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">10</text><text x="110.0" y="50.0" font-size="12" style="fill:#0b6e78" text-anchor="end" font-weight="600">reused memory</text><g><rect x="120" y="40" width="47.2" height="14" style="fill:#0b6e78"/><rect x="120" y="36" width="270" height="24" fill="transparent"/><title>reused memory: mean KL 0.142 nats</title></g><text x="173.2" y="51.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">0.14</text><text x="110.0" y="84.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">shuffled states</text><g><rect x="120" y="74" width="78.0" height="14" style="fill:#b9bdc1"/><rect x="120" y="70" width="270" height="24" fill="transparent"/><title>shuffled states: mean KL 0.283 nats</title></g><text x="204.0" y="85.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">0.28</text><text x="110.0" y="118.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">random noise</text><g><rect x="120" y="108" width="244.3" height="14" style="fill:#b9bdc1"/><rect x="120" y="104" width="270" height="24" fill="transparent"/><title>random noise: mean KL 11.298 nats</title></g><text x="370.3" y="119.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">11.30</text><text x="470.0" y="18.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="600">Same top next token as fresh memory</text><line x1="590.0" y1="32.0" x2="590.0" y2="134.0" stroke="#ededeb" stroke-width="1"/><text x="590.0" y="150.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">0%</text><line x1="725.0" y1="32.0" x2="725.0" y2="134.0" stroke="#ededeb" stroke-width="1"/><text x="725.0" y="150.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">50%</text><line x1="860.0" y1="32.0" x2="860.0" y2="134.0" stroke="#ededeb" stroke-width="1"/><text x="860.0" y="150.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">100%</text><text x="580.0" y="50.0" font-size="12" style="fill:#0b6e78" text-anchor="end" font-weight="600">reused memory</text><g><rect x="590" y="40" width="243.5" height="14" style="fill:#0b6e78"/><rect x="590" y="36" width="270" height="24" fill="transparent"/><title>reused memory: top-1 agreement 90.2%</title></g><text x="839.5" y="51.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">90%</text><text x="580.0" y="84.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">shuffled states</text><g><rect x="590" y="74" width="230.8" height="14" style="fill:#b9bdc1"/><rect x="590" y="70" width="270" height="24" fill="transparent"/><title>shuffled states: top-1 agreement 85.5%</title></g><text x="826.8" y="85.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">85%</text><text x="580.0" y="118.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">random noise</text><g><rect x="590" y="108" width="12.7" height="14" style="fill:#b9bdc1"/><rect x="590" y="104" width="270" height="24" fill="transparent"/><title>random noise: top-1 agreement 4.7%</title></g><text x="608.7" y="119.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">5%</text></svg>
+      <figcaption><b>Figure 8</b>Reused memory against two controls with errors of matched size, Qwen3-1.7B on the 35 long handoffs. Source: carryover.pub figures data; ledger entry 0049.</figcaption>
+    </figure>
+
+    
+      <p>We also looked at where the model's attention goes when it reads with fresh memory. About two fifths of it lands on matched text, and less than a tenth on the tokens that drifted most. That may be part of why reuse mostly holds up, though we only measured the last few positions of each handoff.</p>
+      <aside class="side"><span class="label">Side note: the math</span>Average the deviation over tokens and it equals one minus the share of variance the reused state explains: <span class="math">mean δ = 1 − R̄²</span>. So the removal fraction is exactly zero when <span class="math">R̄² ≥ 1 − τ</span>. The Oracle question turns into a familiar one: how much of the fresh signal does the old memory already explain?</aside>
+      <p><strong>Then the weights axis.</strong> Here the words stay the same and the reader changes. A model in training reads memory it wrote up to 32 updates earlier. On ordinary text it barely notices, and its predictions stay well inside the margin we set. On the math problems it is training on, the gap is 2,000 to 50,000 times larger and crosses that margin after one update (Figure 9, right). How many updates had passed mattered far less than what text the model was reading.</p>
+      <p>And the answers move. After a single update, stale memory changed the model's answer on 7 in 10 math problems, and on closer to 9 in 10 after that (Figure 10). By the last step it had undone almost all the accuracy that training added. Transcripts from a public agent benchmark, MLPerf Agentic Inference, stayed inside the margin, like ordinary text.</p>
+
+    <figure class="l-page">
+      <svg viewBox="0 0 920 290" width="100%" role="img" aria-label="Left: on four model pairs, a same-model reader needs 0% excluded and a different-model reader needs 73% to 96%. Right: on held-out text, divergence stays far inside the 0.001 margin for 32 steps on four runs; on the policy own prompts it sits above the margin from step 1." style="display:block;max-width:920px;margin:0 auto"><text x="0.0" y="18.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="600">Along the task: share of memory the Oracle excludes</text><line x1="170.0" y1="50.0" x2="170.0" y2="238.0" stroke="#ededeb" stroke-width="1"/><text x="170.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">0%</text><line x1="230.0" y1="50.0" x2="230.0" y2="238.0" stroke="#ededeb" stroke-width="1"/><text x="230.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">25%</text><line x1="290.0" y1="50.0" x2="290.0" y2="238.0" stroke="#ededeb" stroke-width="1"/><text x="290.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">50%</text><line x1="350.0" y1="50.0" x2="350.0" y2="238.0" stroke="#ededeb" stroke-width="1"/><text x="350.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">75%</text><line x1="410.0" y1="50.0" x2="410.0" y2="238.0" stroke="#ededeb" stroke-width="1"/><text x="410.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">100%</text><text x="160.0" y="70.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">Qwen 0.6B → 1.7B, short</text><text x="160.0" y="84.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">25 handoffs</text><line x1="375.9" y1="66.0" x2="400.6" y2="66.0" stroke="#b9bdc1" stroke-width="2"/><g><circle cx="392.9" cy="66.0" r="10" fill="transparent"/><circle cx="392.9" cy="66.0" r="4" style="fill:#6b7075"/><title>Qwen 0.6B → 1.7B, short, different-model reader: median 93% (p10 86%, p90 96%)</title></g><g><circle cx="170.0" cy="66.0" r="10" fill="transparent"/><circle cx="170.0" cy="66.0" r="4" style="fill:#0b6e78"/><title>Qwen 0.6B → 1.7B, short, same-model reader: median 0%</title></g><text x="172.0" y="54.0" font-size="12" style="fill:#0b6e78" text-anchor="start" font-weight="600">same model</text><text x="392.9" y="54.0" font-size="12" style="fill:#6b7075" text-anchor="middle" font-weight="400">different model</text><text x="160.0" y="118.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">Qwen 0.6B → 1.7B, long</text><text x="160.0" y="132.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">35 handoffs</text><line x1="387.0" y1="114.0" x2="407.7" y2="114.0" stroke="#b9bdc1" stroke-width="2"/><g><circle cx="401.4" cy="114.0" r="10" fill="transparent"/><circle cx="401.4" cy="114.0" r="4" style="fill:#6b7075"/><title>Qwen 0.6B → 1.7B, long, different-model reader: median 96% (p10 90%, p90 99%)</title></g><g><circle cx="170.0" cy="114.0" r="10" fill="transparent"/><circle cx="170.0" cy="114.0" r="4" style="fill:#0b6e78"/><title>Qwen 0.6B → 1.7B, long, same-model reader: median 0%</title></g><text x="160.0" y="166.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">Llama 3B → 8B, short</text><text x="160.0" y="180.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">28 handoffs</text><line x1="315.8" y1="162.0" x2="374.4" y2="162.0" stroke="#b9bdc1" stroke-width="2"/><g><circle cx="345.6" cy="162.0" r="10" fill="transparent"/><circle cx="345.6" cy="162.0" r="4" style="fill:#6b7075"/><title>Llama 3B → 8B, short, different-model reader: median 73% (p10 61%, p90 85%)</title></g><g><circle cx="170.0" cy="162.0" r="10" fill="transparent"/><circle cx="170.0" cy="162.0" r="4" style="fill:#0b6e78"/><title>Llama 3B → 8B, short, same-model reader: median 0%</title></g><text x="160.0" y="214.0" font-size="12" style="fill:#1a1a1a" text-anchor="end" font-weight="400">Llama 3B → 8B, long</text><text x="160.0" y="228.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">32 handoffs</text><line x1="313.1" y1="210.0" x2="391.1" y2="210.0" stroke="#b9bdc1" stroke-width="2"/><g><circle cx="353.0" cy="210.0" r="10" fill="transparent"/><circle cx="353.0" cy="210.0" r="4" style="fill:#6b7075"/><title>Llama 3B → 8B, long, different-model reader: median 76% (p10 60%, p90 92%)</title></g><g><circle cx="170.0" cy="210.0" r="10" fill="transparent"/><circle cx="170.0" cy="210.0" r="4" style="fill:#0b6e78"/><title>Llama 3B → 8B, long, same-model reader: median 0%</title></g><text x="480.0" y="18.0" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="600">Across training: divergence from fresh memory, nats</text><line x1="524.0" y1="238.0" x2="820.0" y2="238.0" stroke="#ededeb" stroke-width="1"/><text x="518.0" y="242.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">10⁻⁷</text><line x1="524.0" y1="177.3" x2="820.0" y2="177.3" stroke="#ededeb" stroke-width="1"/><text x="518.0" y="181.3" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">10⁻⁵</text><line x1="524.0" y1="116.7" x2="820.0" y2="116.7" stroke="#ededeb" stroke-width="1"/><text x="518.0" y="120.7" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">10⁻³</text><line x1="524.0" y1="56.0" x2="820.0" y2="56.0" stroke="#ededeb" stroke-width="1"/><text x="518.0" y="60.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">10⁻¹</text><text x="524.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">1</text><text x="583.2" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">2</text><text x="642.4" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">4</text><text x="701.6" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">8</text><text x="760.8" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">16</text><text x="820.0" y="256.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">32</text><text x="820.0" y="274.0" font-size="12" style="fill:#6b7075" text-anchor="end" font-weight="400">training steps since the memory was written →</text><line x1="524.0" y1="116.7" x2="820.0" y2="116.7" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="3 3"/><text x="826.0" y="120.7" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">margin, 0.001</text><polyline points="524.0,228.6 583.2,216.3 642.4,202.8 701.6,193.9 760.8,186.9 820.0,182.7" fill="none" stroke="#0b6e78" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="228.6" r="8" fill="transparent"/><circle cx="524.0" cy="228.6" r="2" style="fill:#0b6e78"/><title>Qwen, seed 1, held-out text, step 1: 2e-07 nats</title></g><g><circle cx="583.2" cy="216.3" r="8" fill="transparent"/><circle cx="583.2" cy="216.3" r="2" style="fill:#0b6e78"/><title>Qwen, seed 1, held-out text, step 2: 5.2e-07 nats</title></g><g><circle cx="642.4" cy="202.8" r="8" fill="transparent"/><circle cx="642.4" cy="202.8" r="2" style="fill:#0b6e78"/><title>Qwen, seed 1, held-out text, step 4: 1.4e-06 nats</title></g><g><circle cx="701.6" cy="193.9" r="8" fill="transparent"/><circle cx="701.6" cy="193.9" r="2" style="fill:#0b6e78"/><title>Qwen, seed 1, held-out text, step 8: 2.8e-06 nats</title></g><g><circle cx="760.8" cy="186.9" r="8" fill="transparent"/><circle cx="760.8" cy="186.9" r="2" style="fill:#0b6e78"/><title>Qwen, seed 1, held-out text, step 16: 4.9e-06 nats</title></g><g><circle cx="820.0" cy="182.7" r="8" fill="transparent"/><circle cx="820.0" cy="182.7" r="2" style="fill:#0b6e78"/><title>Qwen, seed 1, held-out text, step 32: 6.6e-06 nats</title></g><polyline points="524.0,96.3 583.2,82.8 642.4,72.1 701.6,61.9 760.8,57.6 820.0,57.5" fill="none" stroke="#6b7075" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="96.3" r="8" fill="transparent"/><circle cx="524.0" cy="96.3" r="2" style="fill:#6b7075"/><title>Qwen, seed 1, own prompts, step 1: 0.0047 nats</title></g><g><circle cx="583.2" cy="82.8" r="8" fill="transparent"/><circle cx="583.2" cy="82.8" r="2" style="fill:#6b7075"/><title>Qwen, seed 1, own prompts, step 2: 0.013 nats</title></g><g><circle cx="642.4" cy="72.1" r="8" fill="transparent"/><circle cx="642.4" cy="72.1" r="2" style="fill:#6b7075"/><title>Qwen, seed 1, own prompts, step 4: 0.029 nats</title></g><g><circle cx="701.6" cy="61.9" r="8" fill="transparent"/><circle cx="701.6" cy="61.9" r="2" style="fill:#6b7075"/><title>Qwen, seed 1, own prompts, step 8: 0.064 nats</title></g><g><circle cx="760.8" cy="57.6" r="8" fill="transparent"/><circle cx="760.8" cy="57.6" r="2" style="fill:#6b7075"/><title>Qwen, seed 1, own prompts, step 16: 0.089 nats</title></g><g><circle cx="820.0" cy="57.5" r="8" fill="transparent"/><circle cx="820.0" cy="57.5" r="2" style="fill:#6b7075"/><title>Qwen, seed 1, own prompts, step 32: 0.089 nats</title></g><polyline points="524.0,230.4 583.2,217.5 642.4,206.1 701.6,195.9 760.8,189.7 820.0,187.5" fill="none" stroke="#0b6e78" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="230.4" r="8" fill="transparent"/><circle cx="524.0" cy="230.4" r="2" style="fill:#0b6e78"/><title>Qwen, seed 2, held-out text, step 1: 1.8e-07 nats</title></g><g><circle cx="583.2" cy="217.5" r="8" fill="transparent"/><circle cx="583.2" cy="217.5" r="2" style="fill:#0b6e78"/><title>Qwen, seed 2, held-out text, step 2: 4.7e-07 nats</title></g><g><circle cx="642.4" cy="206.1" r="8" fill="transparent"/><circle cx="642.4" cy="206.1" r="2" style="fill:#0b6e78"/><title>Qwen, seed 2, held-out text, step 4: 1.1e-06 nats</title></g><g><circle cx="701.6" cy="195.9" r="8" fill="transparent"/><circle cx="701.6" cy="195.9" r="2" style="fill:#0b6e78"/><title>Qwen, seed 2, held-out text, step 8: 2.4e-06 nats</title></g><g><circle cx="760.8" cy="189.7" r="8" fill="transparent"/><circle cx="760.8" cy="189.7" r="2" style="fill:#0b6e78"/><title>Qwen, seed 2, held-out text, step 16: 3.9e-06 nats</title></g><g><circle cx="820.0" cy="187.5" r="8" fill="transparent"/><circle cx="820.0" cy="187.5" r="2" style="fill:#0b6e78"/><title>Qwen, seed 2, held-out text, step 32: 4.6e-06 nats</title></g><polyline points="524.0,99.3 583.2,84.9 642.4,75.1 701.6,63.5 760.8,57.8 820.0,56.9" fill="none" stroke="#6b7075" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="99.3" r="8" fill="transparent"/><circle cx="524.0" cy="99.3" r="2" style="fill:#6b7075"/><title>Qwen, seed 2, own prompts, step 1: 0.0037 nats</title></g><g><circle cx="583.2" cy="84.9" r="8" fill="transparent"/><circle cx="583.2" cy="84.9" r="2" style="fill:#6b7075"/><title>Qwen, seed 2, own prompts, step 2: 0.011 nats</title></g><g><circle cx="642.4" cy="75.1" r="8" fill="transparent"/><circle cx="642.4" cy="75.1" r="2" style="fill:#6b7075"/><title>Qwen, seed 2, own prompts, step 4: 0.023 nats</title></g><g><circle cx="701.6" cy="63.5" r="8" fill="transparent"/><circle cx="701.6" cy="63.5" r="2" style="fill:#6b7075"/><title>Qwen, seed 2, own prompts, step 8: 0.056 nats</title></g><g><circle cx="760.8" cy="57.8" r="8" fill="transparent"/><circle cx="760.8" cy="57.8" r="2" style="fill:#6b7075"/><title>Qwen, seed 2, own prompts, step 16: 0.087 nats</title></g><g><circle cx="820.0" cy="56.9" r="8" fill="transparent"/><circle cx="820.0" cy="56.9" r="2" style="fill:#6b7075"/><title>Qwen, seed 2, own prompts, step 32: 0.093 nats</title></g><polyline points="524.0,214.2 583.2,200.0 642.4,185.7 701.6,176.8 760.8,170.4 820.0,167.6" fill="none" stroke="#0b6e78" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="214.2" r="8" fill="transparent"/><circle cx="524.0" cy="214.2" r="2" style="fill:#0b6e78"/><title>Llama, held-out text, step 1: 6.1e-07 nats</title></g><g><circle cx="583.2" cy="200.0" r="8" fill="transparent"/><circle cx="583.2" cy="200.0" r="2" style="fill:#0b6e78"/><title>Llama, held-out text, step 2: 1.8e-06 nats</title></g><g><circle cx="642.4" cy="185.7" r="8" fill="transparent"/><circle cx="642.4" cy="185.7" r="2" style="fill:#0b6e78"/><title>Llama, held-out text, step 4: 5.3e-06 nats</title></g><g><circle cx="701.6" cy="176.8" r="8" fill="transparent"/><circle cx="701.6" cy="176.8" r="2" style="fill:#0b6e78"/><title>Llama, held-out text, step 8: 1e-05 nats</title></g><g><circle cx="760.8" cy="170.4" r="8" fill="transparent"/><circle cx="760.8" cy="170.4" r="2" style="fill:#0b6e78"/><title>Llama, held-out text, step 16: 1.7e-05 nats</title></g><g><circle cx="820.0" cy="167.6" r="8" fill="transparent"/><circle cx="820.0" cy="167.6" r="2" style="fill:#0b6e78"/><title>Llama, held-out text, step 32: 2.1e-05 nats</title></g><polyline points="524.0,114.4 583.2,94.7 642.4,76.7 701.6,71.4 760.8,66.6 820.0,62.4" fill="none" stroke="#6b7075" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="114.4" r="8" fill="transparent"/><circle cx="524.0" cy="114.4" r="2" style="fill:#6b7075"/><title>Llama, own prompts, step 1: 0.0012 nats</title></g><g><circle cx="583.2" cy="94.7" r="8" fill="transparent"/><circle cx="583.2" cy="94.7" r="2" style="fill:#6b7075"/><title>Llama, own prompts, step 2: 0.0053 nats</title></g><g><circle cx="642.4" cy="76.7" r="8" fill="transparent"/><circle cx="642.4" cy="76.7" r="2" style="fill:#6b7075"/><title>Llama, own prompts, step 4: 0.021 nats</title></g><g><circle cx="701.6" cy="71.4" r="8" fill="transparent"/><circle cx="701.6" cy="71.4" r="2" style="fill:#6b7075"/><title>Llama, own prompts, step 8: 0.031 nats</title></g><g><circle cx="760.8" cy="66.6" r="8" fill="transparent"/><circle cx="760.8" cy="66.6" r="2" style="fill:#6b7075"/><title>Llama, own prompts, step 16: 0.045 nats</title></g><g><circle cx="820.0" cy="62.4" r="8" fill="transparent"/><circle cx="820.0" cy="62.4" r="2" style="fill:#6b7075"/><title>Llama, own prompts, step 32: 0.061 nats</title></g><polyline points="524.0,221.8 583.2,207.2 642.4,193.5 701.6,181.7 760.8,172.9 820.0,168.3" fill="none" stroke="#0b6e78" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="221.8" r="8" fill="transparent"/><circle cx="524.0" cy="221.8" r="2" style="fill:#0b6e78"/><title>SmolLM3, held-out text, step 1: 3.4e-07 nats</title></g><g><circle cx="583.2" cy="207.2" r="8" fill="transparent"/><circle cx="583.2" cy="207.2" r="2" style="fill:#0b6e78"/><title>SmolLM3, held-out text, step 2: 1e-06 nats</title></g><g><circle cx="642.4" cy="193.5" r="8" fill="transparent"/><circle cx="642.4" cy="193.5" r="2" style="fill:#0b6e78"/><title>SmolLM3, held-out text, step 4: 2.9e-06 nats</title></g><g><circle cx="701.6" cy="181.7" r="8" fill="transparent"/><circle cx="701.6" cy="181.7" r="2" style="fill:#0b6e78"/><title>SmolLM3, held-out text, step 8: 7.2e-06 nats</title></g><g><circle cx="760.8" cy="172.9" r="8" fill="transparent"/><circle cx="760.8" cy="172.9" r="2" style="fill:#0b6e78"/><title>SmolLM3, held-out text, step 16: 1.4e-05 nats</title></g><g><circle cx="820.0" cy="168.3" r="8" fill="transparent"/><circle cx="820.0" cy="168.3" r="2" style="fill:#0b6e78"/><title>SmolLM3, held-out text, step 32: 2e-05 nats</title></g><polyline points="524.0,104.5 583.2,92.9 642.4,80.4 701.6,67.5 760.8,63.3 820.0,58.2" fill="none" stroke="#6b7075" stroke-width="1.3" stroke-opacity="0.8"/><g><circle cx="524.0" cy="104.5" r="8" fill="transparent"/><circle cx="524.0" cy="104.5" r="2" style="fill:#6b7075"/><title>SmolLM3, own prompts, step 1: 0.0025 nats</title></g><g><circle cx="583.2" cy="92.9" r="8" fill="transparent"/><circle cx="583.2" cy="92.9" r="2" style="fill:#6b7075"/><title>SmolLM3, own prompts, step 2: 0.0061 nats</title></g><g><circle cx="642.4" cy="80.4" r="8" fill="transparent"/><circle cx="642.4" cy="80.4" r="2" style="fill:#6b7075"/><title>SmolLM3, own prompts, step 4: 0.016 nats</title></g><g><circle cx="701.6" cy="67.5" r="8" fill="transparent"/><circle cx="701.6" cy="67.5" r="2" style="fill:#6b7075"/><title>SmolLM3, own prompts, step 8: 0.042 nats</title></g><g><circle cx="760.8" cy="63.3" r="8" fill="transparent"/><circle cx="760.8" cy="63.3" r="2" style="fill:#6b7075"/><title>SmolLM3, own prompts, step 16: 0.057 nats</title></g><g><circle cx="820.0" cy="58.2" r="8" fill="transparent"/><circle cx="820.0" cy="58.2" r="2" style="fill:#6b7075"/><title>SmolLM3, own prompts, step 32: 0.084 nats</title></g><polyline points="524.0,190.8 583.2,181.0 642.4,166.9 701.6,156.6 760.8,147.8 820.0,139.5" fill="none" stroke="#b9bdc1" stroke-width="1.5" stroke-dasharray="2 3"/><g><circle cx="524.0" cy="190.8" r="8" fill="transparent"/><title>MLPerf agentic windows, step 1: 3.6e-06 nats</title></g><g><circle cx="583.2" cy="181.0" r="8" fill="transparent"/><title>MLPerf agentic windows, step 2: 7.6e-06 nats</title></g><g><circle cx="642.4" cy="166.9" r="8" fill="transparent"/><title>MLPerf agentic windows, step 4: 2.2e-05 nats</title></g><g><circle cx="701.6" cy="156.6" r="8" fill="transparent"/><title>MLPerf agentic windows, step 8: 4.8e-05 nats</title></g><g><circle cx="760.8" cy="147.8" r="8" fill="transparent"/><title>MLPerf agentic windows, step 16: 9.4e-05 nats</title></g><g><circle cx="820.0" cy="139.5" r="8" fill="transparent"/><title>MLPerf agentic windows, step 32: 0.00018 nats</title></g><text x="826.0" y="61.5" font-size="12" style="fill:#6b7075" text-anchor="start" font-weight="400">own prompts</text><text x="826.0" y="143.5" font-size="12" style="fill:#6b7075" text-anchor="start" font-weight="400">agent windows</text><text x="826.0" y="182.2" font-size="12" style="fill:#0b6e78" text-anchor="start" font-weight="600">held-out text</text></svg>
+      <figcaption><b>Figure 9</b>The two axes. Left: share of tokens the Oracle excludes at the key tolerance of 0.32, set from the cross-model map's held-out error, same-model and different-model readers, four model pairs. Right: divergence from fresh memory by training steps since the memory was written, four runs; held-out text, the policy's own prompts, and agentic benchmark windows. Source: carryover.pub figures data.</figcaption>
+    </figure>
+
+    <figure class="l-page">
+      <svg viewBox="0 0 920 240" width="100%" role="img" aria-label="Bar chart. The share of GSM8K answers that change is 71% after one step and 84% to 89% from step 2 to step 32." style="display:block;max-width:920px;margin:0 auto"><text x="40.0" y="16.0" font-size="12" style="fill:#6b7075" text-anchor="start" font-weight="400">GSM8K answers that change</text><line x1="48.0" y1="200.0" x2="748.0" y2="200.0" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="204.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">0%</text><line x1="48.0" y1="157.5" x2="748.0" y2="157.5" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="161.5" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">25%</text><line x1="48.0" y1="115.0" x2="748.0" y2="115.0" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="119.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">50%</text><line x1="48.0" y1="72.5" x2="748.0" y2="72.5" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="76.5" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">75%</text><line x1="48.0" y1="30.0" x2="748.0" y2="30.0" stroke="#ededeb" stroke-width="1"/><text x="40.0" y="34.0" font-size="11" style="fill:#6b7075" text-anchor="end" font-weight="400">100%</text><g><rect x="85.3" y="79.2" width="42.0" height="120.8" style="fill:#0b6e78"/><rect x="48.0" y="30" width="116.7" height="170" fill="transparent"/><title>Step 1: 71% of answers change (95% interval 69% to 74%). Accuracy fresh 5.5%, stale 4.7%</title></g><line x1="106.3" y1="83.4" x2="106.3" y2="75.0" stroke="#1a1a1a" stroke-width="1"/><text x="106.3" y="69.0" font-size="12" style="fill:#1a1a1a" text-anchor="middle" font-weight="400">71%</text><text x="106.3" y="216.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">1</text><g><rect x="202.0" y="57.7" width="42.0" height="142.3" style="fill:#0b6e78"/><rect x="164.7" y="30" width="116.7" height="170" fill="transparent"/><title>Step 2: 84% of answers change (95% interval 82% to 86%). Accuracy fresh 5.5%, stale 4.5%</title></g><line x1="223.0" y1="61.2" x2="223.0" y2="54.2" stroke="#1a1a1a" stroke-width="1"/><text x="223.0" y="48.2" font-size="12" style="fill:#1a1a1a" text-anchor="middle" font-weight="400">84%</text><text x="223.0" y="216.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">2</text><g><rect x="318.7" y="47.9" width="42.0" height="152.1" style="fill:#0b6e78"/><rect x="281.3" y="30" width="116.7" height="170" fill="transparent"/><title>Step 4: 89% of answers change (95% interval 88% to 91%). Accuracy fresh 4.5%, stale 5.6%</title></g><line x1="339.7" y1="50.8" x2="339.7" y2="45.1" stroke="#1a1a1a" stroke-width="1"/><text x="339.7" y="39.1" font-size="12" style="fill:#1a1a1a" text-anchor="middle" font-weight="400">89%</text><text x="339.7" y="216.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">4</text><g><rect x="435.3" y="48.3" width="42.0" height="151.7" style="fill:#0b6e78"/><rect x="398.0" y="30" width="116.7" height="170" fill="transparent"/><title>Step 8: 89% of answers change (95% interval 87% to 91%). Accuracy fresh 4.5%, stale 5.8%</title></g><line x1="456.3" y1="51.3" x2="456.3" y2="45.5" stroke="#1a1a1a" stroke-width="1"/><text x="456.3" y="39.5" font-size="12" style="fill:#1a1a1a" text-anchor="middle" font-weight="400">89%</text><text x="456.3" y="216.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">8</text><g><rect x="552.0" y="53.2" width="42.0" height="146.8" style="fill:#0b6e78"/><rect x="514.7" y="30" width="116.7" height="170" fill="transparent"/><title>Step 16: 86% of answers change (95% interval 84% to 88%). Accuracy fresh 5.7%, stale 5.8%</title></g><line x1="573.0" y1="56.6" x2="573.0" y2="50.1" stroke="#1a1a1a" stroke-width="1"/><text x="573.0" y="44.1" font-size="12" style="fill:#1a1a1a" text-anchor="middle" font-weight="400">86%</text><text x="573.0" y="216.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">16</text><g><rect x="668.7" y="52.3" width="42.0" height="147.7" style="fill:#0b6e78"/><rect x="631.3" y="30" width="116.7" height="170" fill="transparent"/><title>Step 32: 87% of answers change (95% interval 85% to 89%). Accuracy fresh 12.3%, stale 6.1%</title></g><line x1="689.7" y1="55.4" x2="689.7" y2="49.3" stroke="#1a1a1a" stroke-width="1"/><text x="689.7" y="43.3" font-size="12" style="fill:#1a1a1a" text-anchor="middle" font-weight="400">87%</text><text x="689.7" y="216.0" font-size="11" style="fill:#6b7075" text-anchor="middle" font-weight="400">32</text><text x="748.0" y="232.0" font-size="12" style="fill:#6b7075" text-anchor="end" font-weight="400">training steps since the memory was written →</text><text x="764.0" y="52.1" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">At step 32, accuracy is</text><text x="764.0" y="70.1" font-size="12" style="fill:#1a1a1a" text-anchor="start" font-weight="400">12.3% with fresh memory</text><text x="764.0" y="86.1" font-size="12" style="fill:#0b6e78" text-anchor="start" font-weight="600">6.1% with stale memory</text></svg>
+      <figcaption><b>Figure 10</b>Share of GSM8K problems whose greedy answer changes when the policy reads stale memory, with 95% intervals. Source: carryover.pub figures data.</figcaption>
+    </figure>
+
+    
+      <p><strong>What we do not claim.</strong> On the context axis we did not test whether reused memory changes task success. We did not test what happens when memory is reused again and again across many handoffs. And we did not measure how much time or money reuse saves. Those are the next questions.</p>
+
+      <h2>What this means if you build agents</h2>
+      <p>Back to the kitchen. The switch is gone, and your hand still goes to the old wall. Most of the time the room is the same and your memory serves you fine. The mistakes happen at the edges, right where something changed.</p>
+      <p>Reused model memory behaves the same way. If the same model wrote it, most of it is still good, and the errors cluster at the seams. That suggests three habits.</p>
+      <ul class="habits">
+        <li><strong>Check predictions on the text you will serve.</strong> Memory that passes a check can still move the next word, and ordinary test text can hide what happens on real traffic. Check the model's predictions on the kind of text the cache will actually serve, not only the memory itself.</li>
+        <li><strong>Measure your reuse margin offline.</strong> The Oracle needs a fresh reference, so it is an evaluation step, not a cheap check to run in production. Use it to learn how far your reuse sits from the tolerance, not just whether it passes.</li>
+        <li><strong>Test seam-first recomputation.</strong> The worst tokens are not spread evenly. They sit right after the places where the transcript changed. Recomputing those first is a candidate strategy, and the next experiment is to check whether it actually restores the model's predictions.</li>
+      </ul>
+      <aside class="side"><span class="label">Aside</span>There are two ways to run more agents. Buy more chips, or make the memory you already have go further. This work is about the second one. When memory is the scarce resource, knowing which parts of it are still good is worth a lot.</aside>
+      <p>The Oracle is a ruler. It tells you how far your memory is from the reader. The next step is turning that ruler into a policy a real system can afford to run.</p>
+  </article>
+
+<div class="appendix">
+  <h3 id="citation">Citation</h3>
+  <p>This post is a companion to the paper. For attribution in academic contexts, please cite the paper as</p>
+  <pre class="citation">@inproceedings{pazooki2026carryover,
+  title     = {Carryover Effects in Reused {KV} Caches Across Agent Handoffs and Policy Updates},
+  author    = {Pazooki, Hossain and Nadathur, Vikram and Yan, Lingyuan and Alake, Samuel and Asad, Muhammad Zain and Yu, Emerson and Aggarwal, Ritvik and Ishmam, Md Farhan},
+  booktitle = {NeurIPS 2026 Workshop on Long Context Foundation Models},
+  year      = {2026},
+  note      = {Non-archival; camera-ready 13 November 2026},
+  url       = {https://carryover.pub}
+}</pre>
+  <h3>Where the numbers come from</h3>
+  <p>Every number here traces to the paper's two public records: <a href="https://github.com/hossainpazooki/linear-ceiling">linear-ceiling</a> for the context axis and <a href="https://github.com/hossainpazooki/lag-ladder">the lag ladder</a> for the weights axis. Figure 6 is drawn from the long run's public data on Hugging Face, and Figures 7 to 10 from the same figures data that <a href="https://carryover.pub">carryover.pub</a> is built from.</p>
+  <h3>Read more</h3>
+  <p>The paper, the two records and the full method are on <a href="https://carryover.pub">carryover.pub</a>.</p>
+</div>
+<script>
+(function () {
+  // Recorded per-handoff oracle removal fractions, key read-out, from the public run data for
+  // ledger entries 0035/0036 (results/e9l/summary.json). Rows are in run order, shortest sender first.
+  // [handoff, same model @0.03, same @0.10, different model @0.32 (tau_K), different @0.44 (tau_agent)]
+  // Same model is 0 at 0.32 and 0.44 for all 35; different model is 1 at 0.03 and 0.10 for all 35.
+  var H = [
+    ["astropy-7671 #85",.2328,0,.9544,.7001],
+    ["astropy-14598 #94",.0840,0,.9054,.5074],
+    ["astropy-7336 #119",.0762,0,.9432,.5595],
+    ["django-10914 #104",.8108,.2328,.9769,.7961],
+    ["django-10973 #78",.9398,.3857,1,.9803],
+    ["astropy-12907 #97",.2983,0,.9667,.6137],
+    ["django-10097 #111",.9356,.2218,.9668,.7379],
+    ["astropy-14598 #103",.8304,.0119,.9640,.6644],
+    ["astropy-8872 #74",.1844,0,.9768,.7819],
+    ["astropy-12907 #104",.0544,0,.9166,.4968],
+    ["astropy-13453 #102",.0984,0,.9098,.5311],
+    ["astropy-13579 #98",.6781,.0798,.9043,.5842],
+    ["django-11095 #81",.8571,.3876,.9981,.9116],
+    ["astropy-13398 #133",.0789,0,.8261,.3290],
+    ["django-10914 #128",.7068,.1290,.9707,.7494],
+    ["astropy-14539 #114",.0802,0,.9088,.5164],
+    ["astropy-14369 #108",.7440,.2949,.9756,.7249],
+    ["django-10880 #103",.7538,.4940,.9992,.9362],
+    ["django-10097 #137",.8605,.1264,.9904,.8770],
+    ["django-10973 #87",.1581,0,.9580,.6572],
+    ["astropy-8707 #108",.8291,.1996,.9763,.7201],
+    ["django-11087 #97",.0340,0,.8602,.4817],
+    ["astropy-13579 #123",.5255,0,.9111,.5194],
+    ["astropy-13977 #83",.3026,0,.9735,.7322],
+    ["astropy-14365 #153",.9037,.3585,.7893,.1838],
+    ["astropy-14369 #132",.5729,.2342,.9682,.7451],
+    ["astropy-13453 #109",.1383,0,.9463,.5469],
+    ["astropy-13236 #126",.7291,.1896,.9844,.8169],
+    ["astropy-13236 #106",.9554,.5349,.9834,.8694],
+    ["astropy-13398 #116",.4796,.0494,.9538,.6496],
+    ["astropy-8707 #152",.0903,0,.9429,.5057],
+    ["django-10554 #112",.8590,.4834,.9900,.8615],
+    ["astropy-8872 #117",.4094,0,.9484,.6598],
+    ["astropy-13977 #118",.0306,0,.9511,.6651],
+    ["django-11087 #152",.7630,.0218,.9740,.7557]
+  ];
+  var STOPS = [
+    { tau: 0.03, name: '0.03', note: 'About ten times stricter than the paper’s tolerance. Now even the same-model reader has tokens to exclude, a different share on every handoff.' },
+    { tau: 0.10, name: '0.10', note: 'About three times stricter. Most same-model handoffs still need little or nothing; a few need up to half.' },
+    { tau: 0.3186, name: '0.32, the paper’s', note: 'The paper’s tolerance, set from the map’s own error on held-out text. Same model: nothing to exclude on any handoff. Different model: most of the memory has to go.' },
+    { tau: 0.4371, name: '0.44', note: 'The map’s own error on agent text, a looser bar reported alongside. The same model still needs nothing; a different model still loses most of its memory on most handoffs.' }
+  ];
+  function val(h, arm, s) {
+    if (arm === 0) return s === 0 ? h[1] : s === 1 ? h[2] : 0;
+    return s === 0 || s === 1 ? 1 : s === 2 ? h[3] : h[4];
+  }
+  function median(a) { var b = a.slice().sort(function (x, y) { return x - y; }), m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; }
+  var NS = 'http://www.w3.org/2000/svg';
+  var svg = document.getElementById('swarm');
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; }
+  var X0 = 150, X1 = 610, R = 4.6, ROWY = [92, 222];
+  function xs(v) { return X0 + v * (X1 - X0); }
+  // axes
+  [0, 0.25, 0.5, 0.75, 1].forEach(function (t) {
+    el('line', { x1: xs(t), x2: xs(t), y1: 30, y2: 272, stroke: 'var(--rule)' });
+    var tx = el('text', { x: xs(t), y: 290, 'text-anchor': 'middle', 'font-size': 12, 'class': 'muted' }); tx.textContent = Math.round(t * 100) + '%';
+  });
+  var cap = el('text', { x: X1, y: 310, 'text-anchor': 'end', 'font-size': 12, 'class': 'muted' }); cap.textContent = 'share of tokens the Oracle excludes \u2192';
+  var LAB = [['Same model', 'reads its own memory'], ['Different model', 'reads it through the map']];
+  LAB.forEach(function (l, a) {
+    var t1 = el('text', { x: 0, y: ROWY[a] - 4, 'font-size': 13, 'font-weight': 600, style: 'fill:var(--' + (a ? 'other' : 'carry') + ')' }); t1.textContent = l[0];
+    var t2 = el('text', { x: 0, y: ROWY[a] + 13, 'font-size': 12, 'class': 'muted' }); t2.textContent = l[1];
+  });
+  var medLine = [], medText = [];
+  [0, 1].forEach(function (a) {
+    medLine[a] = el('line', { y1: ROWY[a] - 46, y2: ROWY[a] + 46, stroke: 'var(--fg)', 'stroke-width': 1, 'stroke-dasharray': '2 3', 'class': 'mv' });
+    medText[a] = el('text', { y: ROWY[a] - 50, 'text-anchor': 'middle', 'font-size': 12, 'class': 'mv' });
+  });
+  var dots = [[], []];
+  H.forEach(function (h, i) {
+    [0, 1].forEach(function (a) {
+      var c = el('circle', { r: R, cx: 0, cy: 0, tabindex: 0, 'class': 'hd', style: 'fill:var(--' + (a ? 'other' : 'carry') + ')' });
+      var tt = el('title', {}, c);
+      c.addEventListener('mouseenter', function () { pick(i); });
+      c.addEventListener('focus', function () { pick(i); });
+      c.addEventListener('click', function () { pick(i); });
+      dots[a].push({ c: c, t: tt });
+    });
+  });
+  svg.addEventListener('mouseleave', function () { pick(-1); });
+  // ladder: median share at each recorded tolerance
+  var LX0 = 690, LX1 = 840, LY0 = 250, LY1 = 60;
+  function lx(s) { return LX0 + s * (LX1 - LX0) / 3; }
+  function ly(v) { return LY0 - v * (LY0 - LY1); }
+  var lt = el('text', { x: LX0 - 30, y: 18, 'font-size': 12, 'font-weight': 600 }); lt.textContent = 'Median, at each tolerance';
+  var lt2 = el('text', { x: LX1, y: 310, 'text-anchor': 'end', 'font-size': 12, 'class': 'muted' }); lt2.textContent = 'tolerance \u2192';
+  [0, 0.5, 1].forEach(function (v) {
+    el('line', { x1: LX0, x2: LX1, y1: ly(v), y2: ly(v), stroke: 'var(--rule)' });
+    var t = el('text', { x: LX0 - 6, y: ly(v) + 4, 'text-anchor': 'end', 'font-size': 11, 'class': 'muted' }); t.textContent = Math.round(v * 100) + '%';
+  });
+  STOPS.forEach(function (s, k) { var t = el('text', { x: lx(k), y: 290, 'text-anchor': 'middle', 'font-size': 11, 'class': 'muted' }); t.textContent = s.tau.toFixed(2); });
+  var cursor = el('line', { y1: LY1 - 10, y2: LY0, stroke: 'var(--fg)', 'stroke-width': 1, 'class': 'mv' });
+  var MED = [0, 1].map(function (a) { return STOPS.map(function (_, k) { return median(H.map(function (h) { return val(h, a, k); })); }); });
+  MED.forEach(function (m, a) {
+    var col = 'var(--' + (a ? 'other' : 'carry') + ')';
+    el('polyline', { points: m.map(function (v, k) { return lx(k) + ',' + ly(v); }).join(' '), fill: 'none', style: 'stroke:' + col, 'stroke-width': 2 });
+    var et = el('text', { x: LX1 + 8, y: ly(m[3]) + 4, 'font-size': 12, style: 'fill:' + col, 'font-weight': a ? 400 : 600 }); et.textContent = a ? 'different' : 'same';
+    m.forEach(function (v, k) { var c = el('circle', { cx: lx(k), cy: ly(v), r: 3, style: 'fill:' + col }); el('title', {}, c).textContent = (a ? 'different model' : 'same model') + ', tolerance ' + STOPS[k].tau.toFixed(2) + ': median ' + (v * 100).toFixed(1) + '%'; });
+  });
+  // place dots: beeswarm with a capped band; overflow steps inward along x
+  function layout(vals, y0) {
+    var idx = vals.map(function (v, i) { return i; }).sort(function (a, b) { return vals[a] - vals[b]; });
+    var placed = [], out = [], D = 2 * R + 1.2, OFF = [0, 1, -1, 2, -2, 3, -3, 4, -4];
+    idx.forEach(function (i) {
+      var x = xs(vals[i]), dir = vals[i] > 0.5 ? -1 : 1, done = false;
+      for (var step = 0; step < 40 && !done; step++) {
+        for (var o = 0; o < OFF.length && !done; o++) {
+          var y = y0 + OFF[o] * D * 0.87;
+          var ok = placed.every(function (p) { var dx = p[0] - x, dy = p[1] - y; return dx * dx + dy * dy >= D * D; });
+          if (ok) { placed.push([x, y]); out[i] = [x, y]; done = true; }
+        }
+        if (!done) x += dir * D * 0.5;
+      }
+      if (!done) out[i] = [x, y0];
+    });
+    return out;
+  }
+  var SEAM = [
+    [.1168,.0618,.0520,.0358,.0519,.0320],
+    [.1438,.0564,.0639,.0573,.0681,.0242],
+    [.2153,.1217,.0888,.0717,.0716,.0232],
+    [.5251,.3297,.2297,.2065,.1970,.1110],
+    [.8225,.4451,.2885,.2529,.2752,.1411],
+    [.2902,.1389,.0857,.0616,.0766,.0356],
+    [.3114,.2266,.1718,.1576,.1661,.1011],
+    [.2040,.1182,.0749,.0611,.0840,.0668],
+    [.3435,.2324,.1447,.1009,.1250,.0239],
+    [.2137,.1332,.0632,.0535,.0668,.0235],
+    [.0596,.0406,.0359,.0401,.0440,.0258],
+    [.0689,.0321,.0273,.0236,.0323,.0984],
+    [.7545,.4246,.2192,.2399,.1996,.1511],
+    [.0819,.0570,.0336,.0312,.0475,.0249],
+    [.5982,.3043,.1782,.1541,.1543,.0882],
+    [.2312,.1440,.0627,.0670,.0794,.0260],
+    [.3106,.2270,.1956,.1420,.1346,.1331],
+    [.7186,.5437,.3537,.3183,.2627,.2257],
+    [.4926,.3157,.1998,.1984,.2032,.0878],
+    [.8901,.3385,.1724,.1427,.1068,.0284],
+    [.4386,.2908,.2075,.1584,.1350,.1093],
+    [.7406,.2648,.1303,.1079,.0811,.0216],
+    [.0721,.0417,.0299,.0229,.0254,.0708],
+    [.3048,.1382,.0914,.0706,.0533,.0429],
+    [.3658,.1601,.1498,.1557,.1948,.1279],
+    [.5247,.3270,.2251,.1475,.0960,.1390],
+    [.0564,.0402,.0350,.0394,.0457,.0267],
+    [.2277,.1092,.0775,.0926,.1008,.1041],
+    [.3506,.1457,.1146,.1338,.1208,.1860],
+    [.1918,.0795,.0591,.0403,.0529,.0687],
+    [.2845,.2622,.1257,.1147,.1041,.0269],
+    [.6325,.3908,.2562,.2676,.2524,.1789],
+    [.2270,.1525,.1093,.0813,.1031,.0560],
+    [.0543,.0297,.0232,.0239,.0329,.0214],
+    [.3595,.2488,.1736,.1665,.1484,.0901]
+  ];
+  var SEAM_POOLED = [0.2603, 0.1531, 0.0893, 0.0737, 0.0858, 0.0629];
+  // seam panel
+  var svg2 = document.getElementById('seams');
+  function el2(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); (parent || svg2).appendChild(e); return e; }
+  var BINS = ['0', '1', '2–3', '4–7', '8–15', '16+'];
+  var SX0 = 150, SX1 = 610, SY0 = 215, SY1 = 14, SMAX = 0.9;
+  function sx(k) { return SX0 + k * (SX1 - SX0) / 5; }
+  function sy(v) { return SY0 - Math.min(v, SMAX) / SMAX * (SY0 - SY1); }
+  [0, 0.3, 0.6, 0.9].forEach(function (v) {
+    el2('line', { x1: SX0, x2: SX1, y1: sy(v), y2: sy(v), stroke: 'var(--rule)' });
+    var t = el2('text', { x: SX0 - 8, y: sy(v) + 4, 'text-anchor': 'end', 'font-size': 11, 'class': 'muted' }); t.textContent = v.toFixed(1);
+  });
+  BINS.forEach(function (b, k) { var t = el2('text', { x: sx(k), y: SY0 + 18, 'text-anchor': 'middle', 'font-size': 12, 'class': 'muted' }); t.textContent = b; });
+  var sxl = el2('text', { x: SX1, y: SY0 + 38, 'text-anchor': 'end', 'font-size': 12, 'class': 'muted' }); sxl.textContent = 'tokens since the last seam \u2192';
+  var syl = el2('text', { x: 0, y: SY1 + 8, 'font-size': 12, 'font-weight': 600 }); syl.textContent = 'Where the gap lives';
+  var syl2 = el2('text', { x: 0, y: SY1 + 26, 'font-size': 12, 'class': 'muted' }); syl2.textContent = 'median gap, same model,';
+  var syl3 = el2('text', { x: 0, y: SY1 + 42, 'font-size': 12, 'class': 'muted' }); syl3.textContent = 'one line per handoff';
+  var tolLine = el2('line', { x1: SX0, x2: SX1, stroke: 'var(--fg)', 'stroke-width': 1.2, 'stroke-dasharray': '5 4', 'class': 'mv' });
+  var tolText = el2('text', { x: SX1 + 8, 'font-size': 12, 'class': 'mv' });
+  var lines = SEAM.map(function (r, i) {
+    var g = el2('g', { 'class': 'sl' });
+    var pts = r.map(function (v, k) { return sx(k) + ',' + sy(v); }).join(' ');
+    el2('polyline', { points: pts, fill: 'none', 'class': 'sl-line' }, g);
+    el2('polyline', { points: pts, fill: 'none', stroke: 'transparent', 'stroke-width': 9, style: 'cursor:pointer' }, g);
+    el2('title', {}, g).textContent = H[i][0] + ': median gap ' + r[0].toFixed(2) + ' right at a seam, ' + r[5].toFixed(2) + ' sixteen or more tokens away';
+    g.addEventListener('mouseenter', function () { pick(i); });
+    g.addEventListener('click', function () { pick(i); });
+    return g;
+  });
+  el2('polyline', { points: SEAM_POOLED.map(function (v, k) { return sx(k) + ',' + sy(v); }).join(' '), fill: 'none', style: 'stroke:var(--fg)', 'stroke-width': 2.5 });
+  SEAM_POOLED.forEach(function (v, k) { var c = el2('circle', { cx: sx(k), cy: sy(v), r: 3.5, style: 'fill:var(--fg)' }); el2('title', {}, c).textContent = 'all 35 handoffs, ' + BINS[k] + ' tokens after a seam: median gap ' + v.toFixed(3); });
+  var pl = el2('text', { x: sx(1) + 8, y: sy(SEAM_POOLED[1]) - 8, 'font-size': 12, 'font-weight': 600 }); pl.textContent = 'all 35 pooled';
+  var sinfo = el2('text', { x: SX1 + 8, y: 40, 'font-size': 12 });
+  var sinfo2 = el2('text', { x: SX1 + 8, y: 0, 'font-size': 12, 'class': 'muted' });
+  svg2.addEventListener('mouseleave', function () { pick(-1); });
+  function drawSeamTol(s) {
+    var t = STOPS[s].tau, y = sy(t);
+    tolLine.setAttribute('y1', y); tolLine.setAttribute('y2', y);
+    tolText.setAttribute('y', y - 4); tolText.textContent = 'tolerance ' + t.toFixed(2);
+    sinfo2.setAttribute('y', y + 12);
+    var over = SEAM.filter(function (r) { return r[0] > t; }).length;
+    sinfo2.textContent = over + ' of 35 peak above it';
+  }
+  function pickSeam(i) {
+    lines.forEach(function (g, j) { g.classList.toggle('on', j === i); g.classList.toggle('dim', i >= 0 && j !== i); });
+    sinfo.textContent = i < 0 ? '' : H[i][0] + ': ' + SEAM[i][0].toFixed(2) + ' at the seam, ' + SEAM[i][5].toFixed(2) + ' far from it';
+  }
+  var input = document.getElementById('tauStop'), note = document.getElementById('tauNote'), outEl = document.getElementById('tauOut');
+  var sel = -1;
+  function pct(v) { return v === 0 ? '0%' : v === 1 ? '100%' : (v * 100 < 1 ? (v * 100).toFixed(1) : Math.round(v * 100)) + '%'; }
+  function draw() {
+    var s = +input.value;
+    outEl.textContent = STOPS[s].name;
+    note.textContent = STOPS[s].note;
+    [0, 1].forEach(function (a) {
+      var vals = H.map(function (h) { return val(h, a, s); });
+      var pos = layout(vals, ROWY[a]);
+      dots[a].forEach(function (d, i) {
+        d.c.style.transform = 'translate(' + pos[i][0].toFixed(1) + 'px,' + pos[i][1].toFixed(1) + 'px)';
+        d.t.textContent = H[i][0] + ' (sender length rank ' + (i + 1) + ' of 35): ' + (a ? 'different model' : 'same model') + ' excludes ' + pct(vals[i]);
+      });
+      var m = MED[a][s], mx = xs(m);
+      medLine[a].setAttribute('x1', mx); medLine[a].setAttribute('x2', mx);
+      medText[a].setAttribute('x', Math.min(Math.max(mx, X0 + 40), X1 - 40));
+      medText[a].textContent = 'median ' + pct(m);
+    });
+    cursor.setAttribute('x1', lx(s)); cursor.setAttribute('x2', lx(s));
+    drawSeamTol(s);
+    pick(sel);
+  }
+  var info = el('text', { x: X0, y: 160, 'font-size': 12 });
+  function pick(i) {
+    sel = i;
+    var s = +input.value;
+    [0, 1].forEach(function (a) { dots[a].forEach(function (d, j) { d.c.classList.toggle('on', j === i); d.c.classList.toggle('dim', i >= 0 && j !== i); }); });
+    if (typeof pickSeam === 'function') pickSeam(i);
+    info.textContent = i < 0 ? '' : H[i][0] + ': same model ' + pct(val(H[i], 0, s)) + ', different model ' + pct(val(H[i], 1, s));
+  }
+  input.addEventListener('input', draw);
+  draw();
+})();
+</script>
+
+<script>
+(function () {
+  var svg = document.getElementById('ill-svg'); if (!svg) return;
+  var sq = document.getElementById('ill-sq'), flat = document.getElementById('ill-flat');
+  var tog = document.getElementById('ill-toggle'), play = document.getElementById('ill-play');
+  var W = 920, S = 110, MIN = 20, MAX = W - S - 20, x = 40, dir = 1, speed = 120;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var running = !reduce, dragging = false, last = null;
+  function setPlay(v) { running = v; play.setAttribute('aria-pressed', v ? 'true' : 'false'); play.textContent = v ? 'Pause' : 'Play'; }
+  setPlay(running);
+  function place() { sq.setAttribute('x', x.toFixed(1)); }
+  function tick(t) {
+    if (last !== null && running && !dragging) {
+      var dt = Math.min(0.05, (t - last) / 1000);
+      x += dir * speed * dt;
+      if (x > MAX) { x = MAX; dir = -1; } if (x < MIN) { x = MIN; dir = 1; }
+      place();
+    }
+    last = t; requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  function toSvgX(evt) { var r = svg.getBoundingClientRect(); return (evt.clientX - r.left) * W / r.width; }
+  var grab = 0;
+  sq.addEventListener('pointerdown', function (e) { dragging = true; grab = toSvgX(e) - x; sq.setPointerCapture(e.pointerId); sq.style.cursor = 'grabbing'; e.preventDefault(); });
+  sq.addEventListener('pointermove', function (e) { if (!dragging) return; x = Math.max(MIN, Math.min(MAX, toSvgX(e) - grab)); place(); });
+  function end() { if (!dragging) return; dragging = false; sq.style.cursor = 'grab'; setPlay(false); }
+  sq.addEventListener('pointerup', end); sq.addEventListener('pointercancel', end);
+  tog.addEventListener('click', function () { var on = tog.getAttribute('aria-pressed') !== 'true'; tog.setAttribute('aria-pressed', on ? 'true' : 'false'); flat.setAttribute('opacity', on ? '1' : '0'); tog.textContent = on ? 'Show the background' : 'Hide the background'; });
+  play.addEventListener('click', function () { setPlay(!running); });
+})();
+</script>
