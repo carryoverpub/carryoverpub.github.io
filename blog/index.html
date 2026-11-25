@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Carryover: when a model&#x27;s memory no longer fits what it reads</title>
 <meta name="description" content="A carryover effect is what happens when a model reads working memory that another computation wrote. We measured how much it moves the model&#x27;s next word, at agent handoffs and across training.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Carryover: when a model&#x27;s memory no longer fits what it reads">
+<meta property="og:description" content="A carryover effect is what happens when a model reads working memory that another computation wrote. We measured how much it moves the model&#x27;s next word, at agent handoffs and across training.">
+<meta property="og:url" content="https://carryover.pub/blog/">
+<meta property="og:image" content="https://carryover.pub/blog/cover/carryover-cover-og-1200x630-light.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Carryover: when a model's memory no longer fits what it reads. A tilted plane with a context axis and a weights axis, marking a fresh cache, a same-model handoff that passes and a different-model read that fails.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://carryover.pub/blog/cover/carryover-cover-og-1200x630-light.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -115,6 +125,13 @@ html[data-skin="styled"] .post h2{font-size:1.5rem;font-weight:500}
 .appendix{max-width:680px;margin:64px auto 0;padding-top:24px;border-top:1px solid var(--rule)}
 .appendix p{font-size:15px}
 pre.citation{max-width:680px;margin:0 auto 18px;padding:16px;background:var(--layer);font-family:var(--mono);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.hero{max-width:1040px;margin:0 auto 32px}
+.hero-img{display:none;width:100%;height:auto;border-radius:var(--r)}
+html[data-mode="light"][data-font="inter"] .hero-img[data-m="light"][data-f="inter"],
+html[data-mode="light"][data-font="lexend"] .hero-img[data-m="light"][data-f="lexend"],
+html[data-mode="dark"][data-font="inter"] .hero-img[data-m="dark"][data-f="inter"],
+html[data-mode="dark"][data-font="lexend"] .hero-img[data-m="dark"][data-f="lexend"]{display:block}
+@media (max-width:640px){.hero{margin:0 -16px 24px}.hero-img{border-radius:0}}
 .bar .right{display:flex;gap:8px;flex-wrap:wrap}
 @media (max-width:640px){.bar .hm{display:none}.bar .in{gap:8px}.bar .seg button{padding:7px 10px}}
 html[data-font="lexend"]{--title:'Lexend',sans-serif;--body:'Lexend',sans-serif}
@@ -129,6 +146,7 @@ html[data-font="lexend"] .post p,html[data-font="lexend"] .post li{font-size:16p
 <div class="right"><div class="seg" role="group" aria-label="Font"><button type="button" data-set="font" data-val="inter" aria-pressed="true">Inter</button><button type="button" data-set="font" data-val="lexend" aria-pressed="false">Lexend</button></div><div class="seg" role="group" aria-label="Theme"><button type="button" data-set="mode" data-val="light" aria-pressed="true">Light</button><button type="button" data-set="mode" data-val="dark" aria-pressed="false">Dark</button></div></div>
 </div></div>
 <main class="post">
+<div class="hero"><img class="hero-img" data-m="light" data-f="inter" src="cover/carryover-cover-header-2400x1000-light.png" width="2400" height="1000" alt="Carryover cover: a tilted plane with a context axis and a weights axis. A fresh cache has no drift, a same-model handoff drifts 0.11 and passes, and a different model reading it drifts 0.96 and fails."><img class="hero-img" data-m="light" data-f="lexend" src="cover/carryover-cover-header-2400x1000-light-lexend.png" width="2400" height="1000" alt="Carryover cover: a tilted plane with a context axis and a weights axis. A fresh cache has no drift, a same-model handoff drifts 0.11 and passes, and a different model reading it drifts 0.96 and fails." loading="lazy"><img class="hero-img" data-m="dark" data-f="inter" src="cover/carryover-cover-header-2400x1000-dark.png" width="2400" height="1000" alt="Carryover cover: a tilted plane with a context axis and a weights axis. A fresh cache has no drift, a same-model handoff drifts 0.11 and passes, and a different model reading it drifts 0.96 and fails." loading="lazy"><img class="hero-img" data-m="dark" data-f="lexend" src="cover/carryover-cover-header-2400x1000-dark-lexend.png" width="2400" height="1000" alt="Carryover cover: a tilted plane with a context axis and a weights axis. A fresh cache has no drift, a same-model handoff drifts 0.11 and passes, and a different model reading it drifts 0.96 and fails." loading="lazy"></div>
 <h1>Carryover: when a model&#x27;s memory no longer fits what it reads</h1>
 <p class="dek">A carryover effect is what happens when a model reads working memory that another computation wrote. We measured how much it moves the model&#x27;s next word, at agent handoffs and across training.</p>
 <div class="byline">
