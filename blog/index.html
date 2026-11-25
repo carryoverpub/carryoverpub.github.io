@@ -116,6 +116,7 @@ html[data-skin="styled"] .post h2{font-size:1.5rem;font-weight:500}
 .appendix p{font-size:15px}
 pre.citation{max-width:680px;margin:0 auto 18px;padding:16px;background:var(--layer);font-family:var(--mono);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
 .bar .right{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:640px){.bar .hm{display:none}.bar .in{gap:8px}.bar .seg button{padding:7px 10px}}
 html[data-font="lexend"]{--title:'Lexend',sans-serif;--body:'Lexend',sans-serif}
 html[data-font="lexend"] [font-family="'Inter', sans-serif"],html[data-font="lexend"] [font-family="'Geist', 'Inter', sans-serif"]{font-family:'Lexend',sans-serif}
 html[data-font="lexend"] .post p,html[data-font="lexend"] .post li{font-size:16px;line-height:1.7}
@@ -124,7 +125,7 @@ html[data-font="lexend"] .post p,html[data-font="lexend"] .post li{font-size:16p
 </head>
 <body>
 <div class="bar"><div class="in">
-<a class="home" href="../">Carryover · the paper</a>
+<a class="home" href="../">Carryover<span class="hm"> · the paper</span></a>
 <div class="right"><div class="seg" role="group" aria-label="Font"><button type="button" data-set="font" data-val="inter" aria-pressed="true">Inter</button><button type="button" data-set="font" data-val="lexend" aria-pressed="false">Lexend</button></div><div class="seg" role="group" aria-label="Theme"><button type="button" data-set="mode" data-val="light" aria-pressed="true">Light</button><button type="button" data-set="mode" data-val="dark" aria-pressed="false">Dark</button></div></div>
 </div></div>
 <main class="post">
